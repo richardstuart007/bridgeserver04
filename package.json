@@ -4,7 +4,7 @@
   "version": "1.22.0",
   "description": "Bridge School Server",
   "scripts": {
-    "start": "node src/server/server.js 03",
+    "start": "node src/server/server.js 04",
     "start01": "node src/server/server.js 01",
     "start02": "node src/server/server.js 02",
     "start03": "node src/server/server.js 03",
