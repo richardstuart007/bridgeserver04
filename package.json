@@ -1,0 +1,38 @@
+{
+  "name": "bridgeserver",
+  "homepage": "http://.",
+  "version": "1.22.0",
+  "description": "Bridge School Server",
+  "scripts": {
+    "start": "node src/server/server.js 03",
+    "start01": "node src/server/server.js 01",
+    "start02": "node src/server/server.js 02",
+    "start03": "node src/server/server.js 03",
+    "start04": "node src/server/server.js 04",
+    "start11": "node src/server/server.js 11",
+    "start12": "node src/server/server.js 12",
+    "start13": "node src/server/server.js 13",
+    "start14": "node src/server/server.js 14",
+    "start16": "node src/server/server.js 16",
+    "start17": "node src/server/server.js 17"
+  },
+  "author": "Richard",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.3.0",
+    "eslint-plugin-react": "^7.27.1",
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "date-fns": "^2.28.0",
+    "express": "^4.17.1",
+    "knex": "^2.0.0",
+    "node-fetch": "^3.0.0",
+    "pg": "^8.7.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
