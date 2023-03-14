@@ -31,7 +31,7 @@ async function Register(req, res, db, logCounter) {
   //
   //  Time Stamp
   //
-  const TimeStamp = format(new Date(), 'yyLLddHHmmss')
+  const TimeStamp = format(new Date(), 'HHmmss')
   let logMessage = `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName})`
   try {
     //

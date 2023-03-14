@@ -103,3 +103,8 @@ exports.URL_HELLO = '/QuizHello'
 exports.URL_TABLES = '/QuizTables'
 exports.URL_REGISTER = '/QuizRegister'
 exports.URL_SIGNIN = '/QuizSignin'
+//------------------------------------------------------------------------
+//  Other
+//------------------------------------------------------------------------
+exports.KEEP_ALIVE_TIMEOUT = 300000
+exports.HEADERS_TIMEOUT = 310000
