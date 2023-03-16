@@ -18,7 +18,7 @@ const Signin = require('../controllers/Signin')
 //  Debug Settings
 //
 const debugSettings = require('../debug/debugSettings')
-const debugLog = debugSettings.debugSettings(true)
+const debugLog = debugSettings.debugSettings()
 //.............................................................................
 //.  Initialisation
 //.............................................................................

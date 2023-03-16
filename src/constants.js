@@ -29,10 +29,10 @@ exports.KNEX_DATABASE3 = 'wdscnzxj'
 //  Database (Remote 4)
 //------------------------------------------------------------------------
 exports.KNEX_CLIENT4 = 'pg'
-exports.KNEX_PORT4 = 5975
-exports.KNEX_HOST4 = 'containers-us-west-176.railway.app'
+exports.KNEX_PORT4 = 7299
+exports.KNEX_HOST4 = 'containers-us-west-94.railway.app'
 exports.KNEX_USER4 = 'postgres'
-exports.KNEX_PWD4 = 'MpshoqIm2WsiSFOTH2j8'
+exports.KNEX_PWD4 = 'uvUFh6wWuAelcqPBjN98'
 exports.KNEX_DATABASE4 = 'railway'
 //------------------------------------------------------------------------
 //  Database (Local 6)
