@@ -2,7 +2,7 @@
 //= Process a Hello fetch request from server route
 //==================================================================================
 const { format } = require('date-fns')
-const HelloHandler = require('./HelloHandler')
+const updCounter = require('./updCounter')
 //
 //  Debug Settings
 //
@@ -40,43 +40,17 @@ async function Hello(req, res, db, logCounter) {
     rtnObj.rtnCatchMsg = ''
     rtnObj.rtnRows = []
     //
-    //  Body parameters
+    //  Update counter1 - Try
     //
-    const bodyParms = req.body
-    //
-    //  Action type not sent
-    //
-    const { helloType } = bodyParms
-    //
-    //  Check Action passed
-    //
-    if (!helloType) {
-      rtnObj.rtnMessage = `helloType not sent as Body Parameters`
-      return res.status(400).json(rtnObj)
-    }
-    //
-    //  Validate helloType type
-    //
-    if (helloType !== 'SERVER' && helloType !== 'DATABASE') {
-      rtnObj.rtnMessage = `sqlAction ${helloType}: helloType not valid`
-      return res.status(400).json(rtnObj)
-    }
-    //
-    // Process Request Promises(ALL)
-    //
-    const returnData = await Promise.all([HelloHandler.HelloHandler(db, bodyParms)])
-    if (debugLog) console.log(`module(${moduleName}) returnData `, returnData)
+    const dbKey = 'Hello'
+    let dbCounter = 'dbcount1'
+    const rtnUpdCounter = await Promise.all([updCounter.updCounter(db, dbKey, dbCounter)])
+    if (debugLog) console.log(`module(${moduleName}) rtnUpdCounter `, rtnUpdCounter)
     //
     // Parse Results
     //
-    const returnDataObject = returnData[0]
-    rtnObj = Object.assign({}, returnDataObject)
-    //
-    //  Return values
-    //
-    if (debugLog) {
-      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, rtnObj)
-    }
+    const rtnUpdCounterObject = rtnUpdCounter[0]
+    rtnObj = Object.assign({}, rtnUpdCounterObject)
     //
     //  Catch
     //
@@ -104,7 +78,7 @@ async function Hello(req, res, db, logCounter) {
     //
     //  Log return values
     //
-    logMessage = logMessage + ` HelloType(${helloType}) SUCCESS`
+    logMessage = logMessage + ` Hello SUCCESS`
     console.log(logMessage)
     return res.status(200).json(rtnObj)
     //

@@ -463,7 +463,7 @@ function logRawSignIn(req, fetchAction) {
   //  Counter
   //
   const TimeStamp = format(new Date(), 'HHmmss')
-  logCounter = logCounter + 2
+  logCounter++
   //
   // Format message & Log
   //
@@ -479,7 +479,7 @@ function logHello(req) {
   //
   //  Destructure Parameters
   //
-  const { sqlClient, helloType } = req.body
+  const { sqlClient } = req.body
   //
   //  Counter
   //
@@ -488,6 +488,6 @@ function logHello(req) {
   //
   // Format message & Log
   //
-  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Module(${moduleName}) sqlClient(${sqlClient}) HelloType(${helloType})`
+  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Module(${moduleName}) sqlClient(${sqlClient}) Hello`
   console.log(logMessage)
 }

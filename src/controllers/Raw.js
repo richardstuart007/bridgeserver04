@@ -3,6 +3,7 @@
 //==================================================================================
 const { format } = require('date-fns')
 const RawHandler = require('./RawHandler')
+const updCounter = require('./updCounter')
 //
 //  Debug Settings
 //
@@ -24,6 +25,10 @@ let rtnObj = {
   rtnCatchMsg: '',
   rtnRows: []
 }
+//
+// Global
+//
+const dbKey = 'Raw'
 //==================================================================================
 //= Get a row from a table : table, keyName, keyValue are passed in Body
 //==================================================================================
@@ -44,6 +49,10 @@ async function Raw(req, res, db, logCounter) {
     rtnObj.rtnCatch = false
     rtnObj.rtnCatchMsg = ''
     rtnObj.rtnRows = []
+    //
+    //  Update Counter 1 (Raw Request)
+    //
+    UpdCounters(db, dbKey, 'dbcount1')
     //..................................................................................
     //. Check values sent in Body
     //..................................................................................
@@ -61,6 +70,10 @@ async function Raw(req, res, db, logCounter) {
     //
     if (!sqlAction) {
       rtnObj.rtnMessage = `sqlAction not sent as Body Parameters`
+      //
+      //  Update Counter 3 (Raw Fail)
+      //
+      UpdCounters(db, dbKey, 'dbcount3')
       return res.status(400).json(rtnObj)
     }
     //
@@ -76,6 +89,10 @@ async function Raw(req, res, db, logCounter) {
       sqlAction !== 'UPSERT'
     ) {
       rtnObj.rtnMessage = `sqlAction ${sqlAction}: sqlAction not valid`
+      //
+      //  Update Counter 3 (Raw Fail)
+      //
+      UpdCounters(db, dbKey, 'dbcount3')
       return res.status(400).json(rtnObj)
     }
     //
@@ -103,6 +120,10 @@ async function Raw(req, res, db, logCounter) {
           `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) message(${rtnObj.rtnCatchMsg})`
         )
       }
+      //
+      //  Update Counter 3 (Raw Fail)
+      //
+      UpdCounters(db, dbKey, 'dbcount3')
       return res.status(420).json(rtnObj)
     }
     //
@@ -111,6 +132,10 @@ async function Raw(req, res, db, logCounter) {
     const records = Object.keys(rtnObj.rtnRows).length
     logMessage = logMessage + `(${records})`
     console.log(logMessage)
+    //
+    //  Update Counter 2 (Raw Success)
+    //
+    UpdCounters(db, dbKey, 'dbcount2')
     return res.status(200).json(rtnObj)
     //
     // Errors
@@ -121,7 +146,28 @@ async function Raw(req, res, db, logCounter) {
     rtnObj.rtnCatch = true
     rtnObj.rtnCatchMsg = err.message
     rtnObj.rtnCatchFunction = moduleName
+    //
+    //  Update Counter 3 (Raw Fail)
+    //
+    UpdCounters(db, dbKey, 'dbcount3')
     return res.status(400).json(rtnObj)
+  }
+}
+//..................................................................................
+//. Update Counters
+//..................................................................................
+async function UpdCounters(db, dbKey, dbCounter) {
+  try {
+    //
+    //  Update counter
+    //
+    await Promise.all([updCounter.updCounter(db, dbKey, dbCounter)])
+    //
+    // Errors
+    //
+  } catch (err) {
+    console.log(err)
+    return
   }
 }
 //!==================================================================================

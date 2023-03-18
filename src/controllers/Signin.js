@@ -3,6 +3,7 @@
 //==================================================================================
 const { format } = require('date-fns')
 const SigninHandler = require('./SigninHandler')
+const updCounter = require('./updCounter')
 //
 //  Debug Settings
 //
@@ -21,6 +22,10 @@ let rtnObj = {
   rtnCatchMsg: '',
   rtnRows: []
 }
+//
+// Global
+//
+const dbKey = 'Signin'
 //==================================================================================
 //= Signin a User
 //==================================================================================
@@ -41,6 +46,10 @@ async function Signin(req, res, db, logCounter) {
     rtnObj.rtnCatch = false
     rtnObj.rtnCatchMsg = ''
     rtnObj.rtnRows = []
+    //
+    //  Update Counter 1 (Raw Request)
+    //
+    UpdCounters(db, dbKey, 'dbcount1')
     //..................................................................................
     //. Check values sent in Body
     //..................................................................................
@@ -51,6 +60,10 @@ async function Signin(req, res, db, logCounter) {
     //
     if (!user || !password) {
       rtnObj.rtnMessage = `User or Password empty`
+      //
+      //  Update Counter 3 (Raw Fail)
+      //
+      UpdCounters(db, dbKey, 'dbcount3')
       return res.status(400).json(rtnObj)
     }
     //
@@ -91,6 +104,10 @@ async function Signin(req, res, db, logCounter) {
           `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) message(${rtnObj.rtnMessage})`
         )
       }
+      //
+      //  Update Counter 3 (Raw Fail)
+      //
+      UpdCounters(db, dbKey, 'dbcount3')
       return res.status(220).json(rtnObj)
     }
     //
@@ -99,6 +116,10 @@ async function Signin(req, res, db, logCounter) {
     const records = Object.keys(rtnObj.rtnRows).length
     logMessage = logMessage + ` records(${records})`
     console.log(logMessage)
+    //
+    //  Update Counter 2 (Raw Success)
+    //
+    UpdCounters(db, dbKey, 'dbcount2')
     return res.status(200).json(rtnObj)
     //
     // Errors
@@ -109,7 +130,28 @@ async function Signin(req, res, db, logCounter) {
     rtnObj.rtnCatch = true
     rtnObj.rtnCatchMsg = err.message
     rtnObj.rtnCatchFunction = moduleName
+    //
+    //  Update Counter 3 (Raw Fail)
+    //
+    UpdCounters(db, dbKey, 'dbcount3')
     return res.status(400).json(rtnObj)
+  }
+}
+//..................................................................................
+//. Update Counters
+//..................................................................................
+async function UpdCounters(db, dbKey, dbCounter) {
+  try {
+    //
+    //  Update counter
+    //
+    await Promise.all([updCounter.updCounter(db, dbKey, dbCounter)])
+    //
+    // Errors
+    //
+  } catch (err) {
+    console.log(err)
+    return
   }
 }
 //!==================================================================================

@@ -172,6 +172,8 @@ async function sqlDatabase(
     //
     const message = err.message
     if (message.includes('duplicate') && message.includes('userspwd_user')) {
+      rtnObj.rtnValue = false
+      rtnObj.rtnMessage = ''
       rtnObj.rtnMessage = 'Registration User already exists'
       if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObj.rtnMessage)
       return
@@ -179,6 +181,8 @@ async function sqlDatabase(
     //
     //  Other errors
     //
+    rtnObj.rtnValue = false
+    rtnObj.rtnMessage = ''
     rtnObj.rtnCatch = true
     rtnObj.rtnCatchMsg = err.message
     rtnObj.rtnCatchFunction = moduleName
