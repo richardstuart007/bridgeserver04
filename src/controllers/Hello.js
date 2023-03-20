@@ -2,7 +2,7 @@
 //= Process a Hello fetch request from server route
 //==================================================================================
 const { format } = require('date-fns')
-const updCounter = require('./updCounter')
+const updCounter = require('../services/updCounter')
 //
 //  Debug Settings
 //
@@ -13,6 +13,7 @@ const moduleName = 'Hello'
 //  Global Variable - Define return object
 //
 let rtnObj = {
+  rtnBodyParms: '',
   rtnValue: false,
   rtnMessage: '',
   rtnSqlFunction: moduleName,
@@ -29,9 +30,11 @@ async function Hello(req, res, db, logCounter) {
   const TimeStamp = format(new Date(), 'HHmmss')
   let logMessage = `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName})`
   try {
+    const bodyParms = req.body
     //
     //  Initialise Values
     //
+    rtnObj.rtnBodyParms = bodyParms
     rtnObj.rtnValue = false
     rtnObj.rtnMessage = ''
     rtnObj.rtnSqlFunction = moduleName
@@ -39,28 +42,30 @@ async function Hello(req, res, db, logCounter) {
     rtnObj.rtnCatch = false
     rtnObj.rtnCatchMsg = ''
     rtnObj.rtnRows = []
+    if (debugLog)
+      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, rtnObj)
     //
     //  Update counter1 - Try
     //
     const dbKey = 'Hello'
-    let dbCounter = 'dbcount1'
-    const rtnUpdCounter = await Promise.all([updCounter.updCounter(db, dbKey, dbCounter)])
-    if (debugLog) console.log(`module(${moduleName}) rtnUpdCounter `, rtnUpdCounter)
+    const dbCounter = 'dbcount1'
+    const returnData = await Promise.all([updCounter.updCounter(db, dbKey, dbCounter)])
     //
     // Parse Results
     //
-    const rtnUpdCounterObject = rtnUpdCounter[0]
-    rtnObj = Object.assign({}, rtnUpdCounterObject)
+    const rtnObjHandler = returnData[0]
+    const tempObj = Object.assign({}, rtnObjHandler)
+    rtnObj.rtnValue = tempObj.rtnValue
+    rtnObj.rtnMessage = tempObj.rtnMessage
+    rtnObj.rtnCatchFunction = tempObj.rtnCatchFunction
+    rtnObj.rtnCatch = tempObj.rtnCatch
+    rtnObj.rtnCatchMsg = tempObj.rtnCatchMsg
+    rtnObj.rtnRows = tempObj.rtnRows
     //
     //  Catch
     //
     const rtnCatch = rtnObj.rtnCatch
     if (rtnCatch) {
-      if (debugLog) {
-        console.log(
-          `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) message(${rtnObj.rtnCatchMsg})`
-        )
-      }
       return res.status(420).json(rtnObj)
     }
     //
@@ -68,11 +73,6 @@ async function Hello(req, res, db, logCounter) {
     //
     const rtnValue = rtnObj.rtnValue
     if (!rtnValue) {
-      if (debugLog) {
-        console.log(
-          `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) message(${rtnObj.rtnMessage})`
-        )
-      }
       return res.status(220).json(rtnObj)
     }
     //
