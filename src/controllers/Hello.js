@@ -9,28 +9,33 @@ const updCounter = require('../services/updCounter')
 const debugSettings = require('../debug/debugSettings')
 const debugLog = debugSettings.debugSettings()
 const moduleName = 'Hello'
-//
-//  Global Variable - Define return object
-//
-let rtnObj = {
-  rtnBodyParms: '',
-  rtnValue: false,
-  rtnMessage: '',
-  rtnSqlFunction: moduleName,
-  rtnCatchFunction: '',
-  rtnCatch: false,
-  rtnCatchMsg: '',
-  rtnRows: []
-}
 //==================================================================================
 async function Hello(req, res, db, logCounter) {
+  let logMessage
   //
-  //  Time Stamp
+  //  Define return object
   //
-  const TimeStamp = format(new Date(), 'HHmmss')
-  let logMessage = `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName})`
+  let rtnObj = {
+    rtnBodyParms: '',
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   try {
+    //
+    //  Time Stamp
+    //
+    const TimeStamp = format(new Date(), 'HHmmss')
+    //
+    //  Parameters
+    //
     const bodyParms = req.body
+    const { sqlClient, Sess, AxId, AxTry } = bodyParms
+    logMessage = `Handler. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient})`
     //
     //  Initialise Values
     //

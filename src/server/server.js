@@ -422,12 +422,11 @@ function getServerPort() {
 //.............................................................................
 //.  Log the Body to the console
 //.............................................................................
-function logRawTables(req, fetchAction, fetchRoute, handler) {
+function logRawTables(req) {
   //
   //  Destructure Parameters
   //
-  const { sqlClient, sqlAction, sqlString, sqlTable, sqlWhere, sqlOrderByRaw, sqlRow, sqlKeyName } =
-    req.body
+  const { sqlClient, sqlAction, sqlTable, Sess, AxId, AxTry } = req.body
   //
   //  Timestamp and Counter
   //
@@ -436,18 +435,8 @@ function logRawTables(req, fetchAction, fetchRoute, handler) {
   //
   //  Format Message & Log
   //
-  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Module(${moduleName})`
-  if (sqlTable) logMessage = logMessage + ` Table(${sqlTable})`
-  logMessage =
-    logMessage +
-    ` Handler(${handler}) Client(${sqlClient}) Action(${fetchAction}) Route(${fetchRoute}) Sql(${sqlAction})`
-
-  if (sqlString) logMessage = logMessage + ` String(${sqlString})`
-  if (sqlWhere) logMessage = logMessage + ` Where(${sqlWhere})`
-  if (sqlOrderByRaw) logMessage = logMessage + ` OrderByRaw(${sqlOrderByRaw})`
-  if (sqlRow) logMessage = logMessage + ` Row(Data)`
-  if (sqlKeyName) logMessage = logMessage + ` KeyName(${sqlKeyName})`
-
+  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient}) `
+  if (sqlTable) logMessage = logMessage + ` Table(${sqlTable}) Sql(${sqlAction})`
   console.log(logMessage)
 }
 //.............................................................................
@@ -457,7 +446,7 @@ function logRawSignIn(req, fetchAction) {
   //
   //  Destructure Parameters
   //
-  const { user, name, sqlClient } = req.body
+  const { user, name, sqlClient, Sess, AxId, AxTry } = req.body
   const { id } = req.params
   //
   //  Counter
@@ -467,7 +456,7 @@ function logRawSignIn(req, fetchAction) {
   //
   // Format message & Log
   //
-  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Module(${moduleName}) sqlClient(${sqlClient}) fetchAction(${fetchAction}) User(${user})`
+  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient}) fetchAction(${fetchAction}) User(${user})`
   if (name) logMessage.concat(` Name(${name})`)
   if (id) logMessage.concat(` ID(${id})`)
   console.log(logMessage)
@@ -479,7 +468,7 @@ function logHello(req) {
   //
   //  Destructure Parameters
   //
-  const { sqlClient } = req.body
+  const { sqlClient, Sess, AxId, AxTry } = req.body
   //
   //  Counter
   //
@@ -488,6 +477,6 @@ function logHello(req) {
   //
   // Format message & Log
   //
-  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Module(${moduleName}) sqlClient(${sqlClient}) Hello`
+  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient}) Hello`
   console.log(logMessage)
 }

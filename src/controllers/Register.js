@@ -14,41 +14,37 @@ const debugLog = debugSettings.debugSettings()
 //
 const moduleName = 'Register'
 const dbKey = 'Register'
-//
-//  Global Variable - Define return object
-//
-let rtnObj = {
-  rtnBodyParms: '',
-  rtnValue: '',
-  rtnMessage: '',
-  rtnSqlFunction: moduleName,
-  rtnCatchFunction: '',
-  rtnCatch: false,
-  rtnCatchMsg: '',
-  rtnRows: []
-}
 //==================================================================================
 //= Register a User
 //==================================================================================
 async function Register(req, res, db, logCounter) {
+  let logMessage
   //
-  //  Time Stamp
+  //  Define return object
   //
-  const TimeStamp = format(new Date(), 'HHmmss')
-  let logMessage = `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName})`
+  const rtnObj = {
+    rtnBodyParms: '',
+    rtnValue: '',
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   try {
+    //
+    //  Time Stamp
+    //
+    const TimeStamp = format(new Date(), 'HHmmss')
+    //
+    //  Parameters
+    //
     const bodyParms = req.body
-    //
-    //  Initialise Values
-    //
+    const { sqlClient, Sess, AxId, AxTry } = bodyParms
+    logMessage = `Handler. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient})`
     rtnObj.rtnBodyParms = bodyParms
-    rtnObj.rtnValue = false
-    rtnObj.rtnMessage = ''
-    rtnObj.rtnSqlFunction = moduleName
-    rtnObj.rtnCatchFunction = ''
-    rtnObj.rtnCatch = false
-    rtnObj.rtnCatchMsg = ''
-    rtnObj.rtnRows = []
+
     if (debugLog)
       console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, rtnObj)
     //
@@ -64,6 +60,8 @@ async function Register(req, res, db, logCounter) {
     //
     if (!user || !email || !name || !password) {
       rtnObj.rtnMessage = `User or Email or Name or Password empty`
+      logMessage = logMessage + ' ' + rtnObj.rtnMessage
+      console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
       return res.status(400).json(rtnObj)
     }
@@ -87,6 +85,8 @@ async function Register(req, res, db, logCounter) {
     //
     const rtnCatch = rtnObj.rtnCatch
     if (rtnCatch) {
+      logMessage = logMessage + ' ' + rtnObj.rtnCatchMsg
+      console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
       return res.status(420).json(rtnObj)
     }
@@ -95,6 +95,8 @@ async function Register(req, res, db, logCounter) {
     //
     const rtnValue = rtnObj.rtnValue
     if (!rtnValue) {
+      logMessage = logMessage + ' ' + rtnObj.rtnMessage
+      console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
       return res.status(220).json(rtnObj)
     }

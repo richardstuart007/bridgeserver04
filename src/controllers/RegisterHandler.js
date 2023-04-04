@@ -8,22 +8,22 @@ const bcrypt = require('bcrypt')
 const debugSettings = require('../debug/debugSettings')
 const debugLog = debugSettings.debugSettings()
 const moduleName = 'RegisterHandler'
-//.................................
-//  Object returned by this module
-//.................................
-const rtnObj = {
-  rtnValue: false,
-  rtnMessage: '',
-  rtnSqlFunction: moduleName,
-  rtnCatchFunction: '',
-  rtnCatch: false,
-  rtnCatchMsg: '',
-  rtnRows: []
-}
 //==================================================================================
 //= Main ASYNC Function
 //==================================================================================
 async function RegisterHandler(db, bodyParms) {
+  //
+  //  Object returned by this module
+  //
+  const rtnObjHdlr = {
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   try {
     //
     //  Destructure Parameters
@@ -48,7 +48,7 @@ async function RegisterHandler(db, bodyParms) {
     //
     // Get Database record (ASYNC)
     //
-    await sqlDatabase(
+    const rtnObjHdlrdb = await sqlDatabase(
       db,
       user,
       email,
@@ -65,16 +65,16 @@ async function RegisterHandler(db, bodyParms) {
       admin,
       dev
     )
-    return rtnObj
+    return rtnObjHdlrdb
     //
     // Errors
     //
   } catch (err) {
     console.log(`module(${moduleName}) `, err.message)
-    rtnObj.rtnCatch = true
-    rtnObj.rtnCatchMsg = err.message
-    rtnObj.rtnCatchFunction = moduleName
-    return rtnObj
+    rtnObjHdlr.rtnCatch = true
+    rtnObjHdlr.rtnCatchMsg = err.message
+    rtnObjHdlr.rtnCatchFunction = moduleName
+    return rtnObjHdlr
   }
 }
 //!==================================================================================
@@ -97,6 +97,18 @@ async function sqlDatabase(
   admin,
   dev
 ) {
+  //
+  //  Object returned by this module
+  //
+  const rtnObjHdlrdb = {
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   try {
     //-------------------------------------------------------------
     //  Hash the password
@@ -141,9 +153,9 @@ async function sqlDatabase(
     //  Registration failed
     //------------------------------------------------------------
     if (!data_users || !data_users[0]) {
-      rtnObj.rtnMessage = `Register User: FAILED`
-      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObj.rtnMessage)
-      return
+      rtnObjHdlrdb.rtnMessage = `Register User: FAILED`
+      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
+      return rtnObjHdlrdb
     }
     //-------------------------------------------------------------
     //  Usersowner Insert
@@ -159,10 +171,10 @@ async function sqlDatabase(
     //  Registration SUCCESS
     //-------------------------------------------------------------
     if (debugLog) console.log(`module(${moduleName}) data_users `, data_users)
-    rtnObj.rtnValue = true
-    rtnObj.rtnMessage = `Register User: SUCCESS`
-    rtnObj.rtnRows = data_users
-    return
+    rtnObjHdlrdb.rtnValue = true
+    rtnObjHdlrdb.rtnMessage = `Register User: SUCCESS`
+    rtnObjHdlrdb.rtnRows = data_users
+    return rtnObjHdlrdb
     //-------------------------------------------------------------
     // Errors
     //-------------------------------------------------------------
@@ -172,21 +184,21 @@ async function sqlDatabase(
     //
     const message = err.message
     if (message.includes('duplicate') && message.includes('userspwd_user')) {
-      rtnObj.rtnValue = false
-      rtnObj.rtnMessage = ''
-      rtnObj.rtnMessage = 'Registration User already exists'
-      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObj.rtnMessage)
-      return
+      rtnObjHdlrdb.rtnValue = false
+      rtnObjHdlrdb.rtnMessage = ''
+      rtnObjHdlrdb.rtnMessage = 'Registration User already exists'
+      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
+      return rtnObjHdlrdb
     }
     //
     //  Other errors
     //
-    rtnObj.rtnValue = false
-    rtnObj.rtnMessage = ''
-    rtnObj.rtnCatch = true
-    rtnObj.rtnCatchMsg = err.message
-    rtnObj.rtnCatchFunction = moduleName
-    return
+    rtnObjHdlrdb.rtnValue = false
+    rtnObjHdlrdb.rtnMessage = ''
+    rtnObjHdlrdb.rtnCatch = true
+    rtnObjHdlrdb.rtnCatchMsg = err.message
+    rtnObjHdlrdb.rtnCatchFunction = moduleName
+    return rtnObjHdlrdb
   }
 }
 //!==================================================================================

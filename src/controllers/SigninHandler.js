@@ -8,33 +8,23 @@ const bcrypt = require('bcrypt')
 const debugSettings = require('../debug/debugSettings')
 const debugLog = debugSettings.debugSettings()
 const moduleName = 'SigninHandler'
-//.................................
-//  Object returned by this module
-//.................................
-const rtnObj = {
-  rtnValue: false,
-  rtnMessage: '',
-  rtnSqlFunction: moduleName,
-  rtnCatchFunction: '',
-  rtnCatch: false,
-  rtnCatchMsg: '',
-  rtnRows: []
-}
 //==================================================================================
 //= Main ASYNC Function
 //==================================================================================
 async function SigninHandler(db, bodyParms) {
+  //
+  //  Object returned by this module
+  //
+  const rtnObjHdlr = {
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   try {
-    //
-    //  Initialise Values
-    //
-    rtnObj.rtnValue = false
-    rtnObj.rtnMessage = ''
-    rtnObj.rtnSqlFunction = moduleName
-    rtnObj.rtnCatchFunction = ''
-    rtnObj.rtnCatch = false
-    rtnObj.rtnCatchMsg = ''
-    rtnObj.rtnRows = []
     //..................................................................................
     //. Parameter Validation
     //..................................................................................
@@ -46,18 +36,18 @@ async function SigninHandler(db, bodyParms) {
     //
     // Get Database record (ASYNC)
     //
-    await sqlDatabase(db, user, password)
-    if (debugLog) console.log(`module(${moduleName}) rtnObj `, rtnObj)
-    return rtnObj
+    const rtnObjHdlrdb = await sqlDatabase(db, user, password)
+    if (debugLog) console.log(`module(${moduleName}) rtnObjHdlr `, rtnObjHdlr)
+    return rtnObjHdlrdb
     //
     // Errors
     //
   } catch (err) {
     console.log(`module(${moduleName}) `, err.message)
-    rtnObj.rtnCatch = true
-    rtnObj.rtnCatchMsg = err.message
-    rtnObj.rtnCatchFunction = moduleName
-    return rtnObj
+    rtnObjHdlr.rtnCatch = true
+    rtnObjHdlr.rtnCatchMsg = err.message
+    rtnObjHdlr.rtnCatchFunction = moduleName
+    return rtnObjHdlr
   }
 }
 //!==================================================================================
@@ -71,6 +61,18 @@ async function sqlDatabase(db, user, password) {
   let data_users = false
   let data_usersowner = false
   let sqlWhere
+  //
+  //  Object returned by this module
+  //
+  const rtnObjHdlrdb = {
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   //
   //  Try/Catch
   //
@@ -86,9 +88,9 @@ async function sqlDatabase(db, user, password) {
     //  Userspwd not found
     //
     if (!data_userspwd || !data_userspwd[0]) {
-      rtnObj.rtnMessage = `Invalid User, please Register`
-      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObj.rtnMessage)
-      return
+      rtnObjHdlrdb.rtnMessage = `Invalid User, please Register`
+      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
+      return rtnObjHdlrdb
     }
     //-------------------------------------------------------------
     //  Validate password
@@ -97,9 +99,9 @@ async function sqlDatabase(db, user, password) {
     const uphash = userspwd.uphash
     const valid = bcrypt.compareSync(password, uphash)
     if (!valid) {
-      rtnObj.rtnMessage = `Invalid Password`
-      if (debugLog) console.log(`module(${moduleName}) rtnMessage`, rtnObj.rtnMessage)
-      return
+      rtnObjHdlrdb.rtnMessage = `Invalid Password`
+      if (debugLog) console.log(`module(${moduleName}) rtnMessage`, rtnObjHdlrdb.rtnMessage)
+      return rtnObjHdlrdb
     }
     //
     //  User ID
@@ -115,9 +117,9 @@ async function sqlDatabase(db, user, password) {
     //  Not found
     //
     if (!data_users || !data_users[0]) {
-      rtnObj.rtnMessage = `Database error (Users) not found for user($user) id($upid)`
-      if (debugLog) console.log(`module(${moduleName}) rtnMessage`, rtnObj.rtnMessage)
-      return
+      rtnObjHdlrdb.rtnMessage = `Database error (Users) not found for user($user) id($upid)`
+      if (debugLog) console.log(`module(${moduleName}) rtnMessage`, rtnObjHdlrdb.rtnMessage)
+      return rtnObjHdlrdb
     }
     //-------------------------------------------------------------
     //  GET Usersowner
@@ -129,8 +131,8 @@ async function sqlDatabase(db, user, password) {
     //  Not found
     //
     if (!data_usersowner) {
-      rtnObj.rtnMessage = `Database error (Usersowner) not found for user($user) id($upid)`
-      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObj.rtnMessage)
+      rtnObjHdlrdb.rtnMessage = `Database error (Usersowner) not found for user($user) id($upid)`
+      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
     }
     //-------------------------------------------------------------
     //  Return user found
@@ -140,20 +142,20 @@ async function sqlDatabase(db, user, password) {
     //
     // Update Return Values
     //
-    rtnObj.rtnValue = true
-    rtnObj.rtnMessage = `Signin User: SUCCESS`
-    rtnObj.rtnRows[0] = data_users[0]
-    rtnObj.rtnRows[1] = data_usersowner
-    return
+    rtnObjHdlrdb.rtnValue = true
+    rtnObjHdlrdb.rtnMessage = `Signin User: SUCCESS`
+    rtnObjHdlrdb.rtnRows[0] = data_users[0]
+    rtnObjHdlrdb.rtnRows[1] = data_usersowner
+    return rtnObjHdlrdb
     //-------------------------------------------------------------
     // Errors
     //-------------------------------------------------------------
   } catch (err) {
     console.log(`module(${moduleName}) err.message `, err.message)
-    rtnObj.rtnCatch = true
-    rtnObj.rtnCatchMsg = err.message
-    rtnObj.rtnCatchFunction = moduleName
-    return
+    rtnObjHdlrdb.rtnCatch = true
+    rtnObjHdlrdb.rtnCatchMsg = err.message
+    rtnObjHdlrdb.rtnCatchFunction = moduleName
+    return rtnObjHdlrdb
   }
 }
 //!==================================================================================

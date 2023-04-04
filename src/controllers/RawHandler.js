@@ -7,33 +7,23 @@
 const debugSettings = require('../debug/debugSettings')
 const debugLog = debugSettings.debugSettings()
 const moduleName = 'RawHandler'
-//.................................
-//  Object returned by this module
-//.................................
-const rtnObj = {
-  rtnValue: false,
-  rtnMessage: '',
-  rtnSqlFunction: moduleName,
-  rtnCatchFunction: '',
-  rtnCatch: false,
-  rtnCatchMsg: '',
-  rtnRows: []
-}
 //==================================================================================
 //= Main ASYNC Function
 //==================================================================================
 async function RawHandler(db, bodyParms) {
+  //
+  //  Object returned by this module
+  //
+  const rtnObjHdlr = {
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   try {
-    //
-    //  Initialise Values
-    //
-    rtnObj.rtnValue = false
-    rtnObj.rtnMessage = ''
-    rtnObj.rtnSqlFunction = moduleName
-    rtnObj.rtnCatchFunction = ''
-    rtnObj.rtnCatch = false
-    rtnObj.rtnCatchMsg = ''
-    rtnObj.rtnRows = []
     //..................................................................................
     //. Parameter Validation
     //..................................................................................
@@ -47,8 +37,8 @@ async function RawHandler(db, bodyParms) {
     // Check values sent
     //
     if (!sqlAction) {
-      rtnObj.rtnMessage = `SqlAction parameter not passed`
-      return rtnObj
+      rtnObjHdlr.rtnMessage = `SqlAction parameter not passed`
+      return rtnObjHdlr
     }
     //
     //  Validate sqlAction type
@@ -62,27 +52,27 @@ async function RawHandler(db, bodyParms) {
       sqlAction !== 'UPDATE' &&
       sqlAction !== 'UPSERT'
     ) {
-      rtnObj.rtnMessage = `SqlAction ${sqlAction}: SqlAction not valid`
-      return rtnObj
+      rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: SqlAction not valid`
+      return rtnObjHdlr
     }
     //
     //  SELECTSQL needs sqlString
     //
     if (sqlAction === 'SELECTSQL' && !sqlString) {
-      rtnObj.rtnMessage = `SqlAction ${sqlAction}: sqlString not passed`
-      return rtnObj
+      rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: sqlString not passed`
+      return rtnObjHdlr
     }
     //
     //  not SELECTSQL needs table
     //
     if (sqlAction !== 'SELECTSQL' && !sqlTable) {
-      rtnObj.rtnMessage = `SqlAction ${sqlAction}: sqlTable not passed`
-      return rtnObj
+      rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: sqlTable not passed`
+      return rtnObjHdlr
     }
     //
     // Get Database record (ASYNC)
     //
-    await sqlDatabase(
+    const rtnObjHdlrdb = await sqlDatabase(
       db,
       sqlAction,
       sqlString,
@@ -92,16 +82,16 @@ async function RawHandler(db, bodyParms) {
       sqlRow,
       sqlKeyName
     )
-    return rtnObj
+    return rtnObjHdlrdb
     //
     // Errors
     //
   } catch (err) {
     console.log(`module(${moduleName}) `, err.message)
-    rtnObj.rtnCatch = true
-    rtnObj.rtnCatchMsg = err.message
-    rtnObj.rtnCatchFunction = moduleName
-    return rtnObj
+    rtnObjHdlr.rtnCatch = true
+    rtnObjHdlr.rtnCatchMsg = err.message
+    rtnObjHdlr.rtnCatchFunction = moduleName
+    return rtnObjHdlr
   }
 }
 //!==================================================================================
@@ -122,6 +112,18 @@ async function sqlDatabase(
   //
   let sqlData
   let returning = false
+  //
+  //  Object returned by this module
+  //
+  const rtnObjHdlrdb = {
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   //
   //  Try/Catch
   //
@@ -174,25 +176,25 @@ async function sqlDatabase(
     //
     if (debugLog) console.log(`module(${moduleName}) sqlData `, sqlData)
     if (returning && (!sqlData || !sqlData[0])) {
-      rtnObj.rtnMessage = `SqlAction ${sqlAction}: FAILED`
-      return
+      rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: FAILED`
+      return rtnObjHdlrdb
     }
     //
     // Update Return Values
     //
-    rtnObj.rtnValue = true
-    rtnObj.rtnMessage = `SqlAction ${sqlAction}: SUCCESS`
-    rtnObj.rtnRows = sqlData
-    return
+    rtnObjHdlrdb.rtnValue = true
+    rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: SUCCESS`
+    rtnObjHdlrdb.rtnRows = sqlData
+    return rtnObjHdlrdb
     //
     // Errors
     //
   } catch (err) {
     console.log(`module(${moduleName}) `, err.message)
-    rtnObj.rtnCatch = true
-    rtnObj.rtnCatchMsg = err.message
-    rtnObj.rtnCatchFunction = moduleName
-    return
+    rtnObjHdlrdb.rtnCatch = true
+    rtnObjHdlrdb.rtnCatchMsg = err.message
+    rtnObjHdlrdb.rtnCatchFunction = moduleName
+    return rtnObjHdlrdb
   }
 }
 //!==================================================================================

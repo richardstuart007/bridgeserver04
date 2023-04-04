@@ -14,43 +14,40 @@ const debugLog = debugSettings.debugSettings()
 //
 const moduleName = 'Raw'
 const dbKey = 'Raw'
-//
-//  Object returned by this handler
-//
-let rtnObj = {
-  rtnBodyParms: '',
-  rtnValue: false,
-  rtnMessage: '',
-  rtnSqlFunction: moduleName,
-  rtnCatchFunction: '',
-  rtnCatch: false,
-  rtnCatchMsg: '',
-  rtnRows: []
-}
 //==================================================================================
 //= Get a row from a table : table, keyName, keyValue are passed in Body
 //==================================================================================
 async function Raw(req, res, db, logCounter) {
+  let logMessage
   //
-  //  Time Stamp
+  //  Define return object
   //
-  const TimeStamp = format(new Date(), 'HHmmss')
-  let logMessage = `Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName})`
+  const rtnObj = {
+    rtnBodyParms: '',
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   try {
+    //
+    //  Time Stamp
+    //
+    const TimeStamp = format(new Date(), 'HHmmss')
+    //
+    //  Parameters
+    //
     const bodyParms = req.body
-    //
-    //  Initialise Values
-    //
+    const { sqlClient, Sess, AxId, AxTry } = bodyParms
+    logMessage = `Handler. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient})`
     rtnObj.rtnBodyParms = bodyParms
-    rtnObj.rtnValue = false
-    rtnObj.rtnMessage = ''
-    rtnObj.rtnSqlFunction = moduleName
-    rtnObj.rtnCatchFunction = ''
-    rtnObj.rtnCatch = false
-    rtnObj.rtnCatchMsg = ''
-    rtnObj.rtnRows = []
     if (debugLog)
-      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, rtnObj)
+      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, {
+        ...rtnObj
+      })
     //
     //  Update Counter 1 (Raw Request)
     //
@@ -71,6 +68,8 @@ async function Raw(req, res, db, logCounter) {
     //
     if (!sqlAction) {
       rtnObj.rtnMessage = `sqlAction not sent as Body Parameters`
+      logMessage = logMessage + ' ' + rtnObj.rtnMessage
+      console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
       return res.status(400).json(rtnObj)
     }
@@ -87,6 +86,8 @@ async function Raw(req, res, db, logCounter) {
       sqlAction !== 'UPSERT'
     ) {
       rtnObj.rtnMessage = `sqlAction ${sqlAction}: sqlAction not valid`
+      logMessage = logMessage + ' ' + rtnObj.rtnMessage
+      console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
       return res.status(400).json(rtnObj)
     }
@@ -110,6 +111,8 @@ async function Raw(req, res, db, logCounter) {
     //
     const rtnCatch = rtnObj.rtnCatch
     if (rtnCatch) {
+      logMessage = logMessage + ' ' + rtnObj.rtnCatchMsg
+      console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
       return res.status(420).json(rtnObj)
     }
