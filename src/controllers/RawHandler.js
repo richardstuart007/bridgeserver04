@@ -32,7 +32,7 @@ async function RawHandler(db, bodyParms) {
     //
     const { sqlAction, sqlString, sqlTable, sqlWhere, sqlOrderByRaw, sqlRow, sqlKeyName } =
       bodyParms
-    if (debugLog) console.log(`module(${moduleName}) bodyParms `, bodyParms)
+    if (debugLog) console.log(`module(${moduleName}) bodyParms `, { ...bodyParms })
     //
     // Check values sent
     //
@@ -174,7 +174,7 @@ async function sqlDatabase(
     //
     //  Expect returning value
     //
-    if (debugLog) console.log(`module(${moduleName}) sqlData `, sqlData)
+    if (debugLog) console.log(`module(${moduleName}) sqlData `, [...sqlData])
     if (returning && (!sqlData || !sqlData[0])) {
       rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: FAILED`
       return rtnObjHdlrdb

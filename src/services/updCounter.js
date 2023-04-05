@@ -7,34 +7,24 @@
 const debugSettings = require('../debug/debugSettings')
 const debugLog = debugSettings.debugSettings()
 const moduleName = 'updCounter'
-//.................................
-//  Object returned by this module
-//.................................
-const rtnObj = {
-  rtnValue: false,
-  rtnMessage: '',
-  rtnSqlFunction: moduleName,
-  rtnCatchFunction: '',
-  rtnCatch: false,
-  rtnCatchMsg: '',
-  rtnRows: []
-}
 //==================================================================================
 //= Main ASYNC Function
 //==================================================================================
 async function updCounter(db, dbKey, dbCounter) {
+  //
+  //  Object returned by this module
+  //
+  const rtnObjHdlr = {
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
   try {
-    //
-    //  Initialise Values
-    //
-    rtnObj.rtnValue = false
-    rtnObj.rtnMessage = ''
-    rtnObj.rtnSqlFunction = moduleName
-    rtnObj.rtnCatchFunction = ''
-    rtnObj.rtnCatch = false
-    rtnObj.rtnCatchMsg = ''
-    rtnObj.rtnRows = []
-    //..................................................................................
+    //.................................................................................
     //. Parameter Validation
     //..................................................................................
     if (debugLog) console.log(`module(${moduleName}) dbKey `, dbKey)
@@ -42,17 +32,17 @@ async function updCounter(db, dbKey, dbCounter) {
     //
     // Check Database (ASYNC)
     //
-    await sqlDatabase(db, dbKey, dbCounter)
-    return rtnObj
+    const rtnObjHdlrdb = await sqlDatabase(db, dbKey, dbCounter)
+    return rtnObjHdlrdb
     //
     // Errors
     //
   } catch (err) {
     console.log(`module(${moduleName}) `, err.message)
-    rtnObj.rtnCatch = true
-    rtnObj.rtnCatchMsg = err.message
-    rtnObj.rtnCatchFunction = moduleName
-    return rtnObj
+    rtnObjHdlr.rtnCatch = true
+    rtnObjHdlr.rtnCatchMsg = err.message
+    rtnObjHdlr.rtnCatchFunction = moduleName
+    return rtnObjHdlr
   }
 }
 //!==================================================================================
@@ -68,6 +58,18 @@ async function sqlDatabase(db, dbKey, dbCounter) {
   const sqlString = `UPDATE ${sqlTable} SET ${dbCounter} = ${dbCounter} + 1 WHERE dbKey = '${dbKey}' RETURNING *`
   if (debugLog) console.log(`module(${moduleName}) sqlString `, sqlString)
   //
+  //  Object returned by this module
+  //
+  const rtnObjHdlrdb = {
+    rtnValue: false,
+    rtnMessage: '',
+    rtnSqlFunction: moduleName,
+    rtnCatchFunction: '',
+    rtnCatch: false,
+    rtnCatchMsg: '',
+    rtnRows: []
+  }
+  //
   //  Try/Catch
   //
   try {
@@ -76,16 +78,16 @@ async function sqlDatabase(db, dbKey, dbCounter) {
     //  Expect returning value
     //
     if (!rtnData || !rtnData.rows[0]) {
-      rtnObj.rtnMessage = `SqlAction ${sqlAction}: FAILED`
-      return
+      rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: FAILED`
+      return rtnObjHdlrdb
     }
     //
     // Update Return Values
     //
     const rows = rtnData.rows
-    if (debugLog) console.log(`module(${moduleName}) rows `, rows)
+    if (debugLog) console.log(`module(${moduleName}) rows `, [...rows])
     const record = rows[0]
-    if (debugLog) console.log(`module(${moduleName}) record `, record)
+    if (debugLog) console.log(`module(${moduleName}) record `, { ...record })
     let dbcount = 0
     dbCounter === 'dbcount1'
       ? (dbcount = record.dbcount1)
@@ -93,20 +95,20 @@ async function sqlDatabase(db, dbKey, dbCounter) {
       ? (dbcount = record.dbcount2)
       : (dbcount = record.dbcount3)
 
-    rtnObj.rtnValue = true
-    rtnObj.rtnMessage = `SqlAction ${sqlAction}: SUCCESS - Updated ${dbCounter} ${dbcount}`
-    rtnObj.rtnRows = rows
-    if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObj.rtnMessage)
-    return
+    rtnObjHdlrdb.rtnValue = true
+    rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: SUCCESS - Updated ${dbCounter} ${dbcount}`
+    rtnObjHdlrdb.rtnRows = rows
+    if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
+    return rtnObjHdlrdb
     //
     // Errors
     //
   } catch (err) {
     console.log(`module(${moduleName}) `, err.message)
-    rtnObj.rtnCatch = true
-    rtnObj.rtnCatchMsg = err.message
-    rtnObj.rtnCatchFunction = moduleName
-    return
+    rtnObjHdlrdb.rtnCatch = true
+    rtnObjHdlrdb.rtnCatchMsg = err.message
+    rtnObjHdlrdb.rtnCatchFunction = moduleName
+    return rtnObjHdlrdb
   }
 }
 //!==================================================================================

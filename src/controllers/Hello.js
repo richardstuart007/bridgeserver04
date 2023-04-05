@@ -48,7 +48,9 @@ async function Hello(req, res, db, logCounter) {
     rtnObj.rtnCatchMsg = ''
     rtnObj.rtnRows = []
     if (debugLog)
-      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, rtnObj)
+      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, {
+        ...rtnObj
+      })
     //
     //  Update counter1 - Try
     //
@@ -71,14 +73,14 @@ async function Hello(req, res, db, logCounter) {
     //
     const rtnCatch = rtnObj.rtnCatch
     if (rtnCatch) {
-      return res.status(420).json(rtnObj)
+      return res.status(503).json(rtnObj)
     }
     //
     //  Not found
     //
     const rtnValue = rtnObj.rtnValue
     if (!rtnValue) {
-      return res.status(220).json(rtnObj)
+      return res.status(204).json(rtnObj)
     }
     //
     //  Log return values
@@ -95,7 +97,7 @@ async function Hello(req, res, db, logCounter) {
     rtnObj.rtnCatch = true
     rtnObj.rtnCatchMsg = err.message
     rtnObj.rtnCatchFunction = moduleName
-    return res.status(400).json(rtnObj)
+    return res.status(503).json(rtnObj)
   }
 }
 //!==================================================================================

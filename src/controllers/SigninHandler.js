@@ -32,12 +32,12 @@ async function SigninHandler(db, bodyParms) {
     //  Destructure Parameters
     //
     const { user, password } = bodyParms
-    if (debugLog) console.log(`module(${moduleName}) bodyParms `, bodyParms)
+    if (debugLog) console.log(`module(${moduleName}) bodyParms `, { ...bodyParms })
     //
     // Get Database record (ASYNC)
     //
     const rtnObjHdlrdb = await sqlDatabase(db, user, password)
-    if (debugLog) console.log(`module(${moduleName}) rtnObjHdlr `, rtnObjHdlr)
+    if (debugLog) console.log(`module(${moduleName}) rtnObjHdlr `, { ...rtnObjHdlr })
     return rtnObjHdlrdb
     //
     // Errors
@@ -137,8 +137,8 @@ async function sqlDatabase(db, user, password) {
     //-------------------------------------------------------------
     //  Return user found
     //-------------------------------------------------------------
-    if (debugLog) console.log(`module(${moduleName}) data_users`, data_users)
-    if (debugLog) console.log(`module(${moduleName}) data_usersowner`, data_usersowner)
+    if (debugLog) console.log(`module(${moduleName}) data_users`, [...data_users])
+    if (debugLog) console.log(`module(${moduleName}) data_usersowner`, [...data_usersowner])
     //
     // Update Return Values
     //

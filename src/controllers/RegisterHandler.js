@@ -170,7 +170,7 @@ async function sqlDatabase(
     //-------------------------------------------------------------
     //  Registration SUCCESS
     //-------------------------------------------------------------
-    if (debugLog) console.log(`module(${moduleName}) data_users `, data_users)
+    if (debugLog) console.log(`module(${moduleName}) data_users `, [...data_users])
     rtnObjHdlrdb.rtnValue = true
     rtnObjHdlrdb.rtnMessage = `Register User: SUCCESS`
     rtnObjHdlrdb.rtnRows = data_users

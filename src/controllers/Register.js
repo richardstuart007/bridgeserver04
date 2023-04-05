@@ -46,7 +46,9 @@ async function Register(req, res, db, logCounter) {
     rtnObj.rtnBodyParms = bodyParms
 
     if (debugLog)
-      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, rtnObj)
+      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, {
+        ...rtnObj
+      })
     //
     //  Update Counter 1 (Raw Request)
     //
@@ -63,7 +65,7 @@ async function Register(req, res, db, logCounter) {
       logMessage = logMessage + ' ' + rtnObj.rtnMessage
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
-      return res.status(400).json(rtnObj)
+      return res.status(503).json(rtnObj)
     }
     //
     // Process Request Promises(ALL)
@@ -88,7 +90,7 @@ async function Register(req, res, db, logCounter) {
       logMessage = logMessage + ' ' + rtnObj.rtnCatchMsg
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
-      return res.status(420).json(rtnObj)
+      return res.status(503).json(rtnObj)
     }
     //
     //  Not found
@@ -98,7 +100,7 @@ async function Register(req, res, db, logCounter) {
       logMessage = logMessage + ' ' + rtnObj.rtnMessage
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
-      return res.status(220).json(rtnObj)
+      return res.status(204).json(rtnObj)
     }
     //
     //  Log return values
@@ -118,7 +120,7 @@ async function Register(req, res, db, logCounter) {
     rtnObj.rtnCatchMsg = err.message
     rtnObj.rtnCatchFunction = moduleName
     UpdCounters(db, dbKey, 'dbcount3')
-    return res.status(400).json(rtnObj)
+    return res.status(503).json(rtnObj)
   }
 }
 //..................................................................................
