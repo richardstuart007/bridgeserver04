@@ -50,6 +50,7 @@ async function RawHandler(db, bodyParms) {
       sqlAction !== 'SELECT' &&
       sqlAction !== 'INSERT' &&
       sqlAction !== 'UPDATE' &&
+      sqlAction !== 'UPDATERAW' &&
       sqlAction !== 'UPSERT'
     ) {
       rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: SqlAction not valid`
@@ -142,7 +143,10 @@ async function sqlDatabase(
       case 'UPDATE':
         returning = true
         sqlData = await db.update(sqlRow).from(sqlTable).whereRaw(sqlWhere).returning(['*'])
-
+        break
+      case 'UPDATERAW':
+        returning = true
+        sqlData = await db.raw(sqlString)
         break
       case 'DELETE':
         returning = true

@@ -83,6 +83,7 @@ async function Raw(req, res, db, logCounter) {
       sqlAction !== 'SELECT' &&
       sqlAction !== 'INSERT' &&
       sqlAction !== 'UPDATE' &&
+      sqlAction !== 'UPDATERAW' &&
       sqlAction !== 'UPSERT'
     ) {
       rtnObj.rtnMessage = `sqlAction ${sqlAction}: sqlAction not valid`
