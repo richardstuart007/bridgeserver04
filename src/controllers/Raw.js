@@ -30,7 +30,8 @@ async function Raw(req, res, db, logCounter) {
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   try {
     //
@@ -71,6 +72,7 @@ async function Raw(req, res, db, logCounter) {
       logMessage = logMessage + ' ' + rtnObj.rtnMessage
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
+      rtnObj.rtnSts = 8
       return res.status(503).json(rtnObj)
     }
     //
@@ -90,6 +92,7 @@ async function Raw(req, res, db, logCounter) {
       logMessage = logMessage + ' ' + rtnObj.rtnMessage
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
+      rtnObj.rtnSts = 8
       return res.status(503).json(rtnObj)
     }
     //
@@ -115,6 +118,7 @@ async function Raw(req, res, db, logCounter) {
       logMessage = logMessage + ' ' + rtnObj.rtnCatchMsg
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
+      rtnObj.rtnSts = 8
       return res.status(503).json(rtnObj)
     }
     //
@@ -124,6 +128,7 @@ async function Raw(req, res, db, logCounter) {
     logMessage = logMessage + `(${records})`
     console.log(logMessage)
     UpdCounters(db, dbKey, 'dbcount2')
+    rtnObj.rtnSts = 1
     return res.status(200).json(rtnObj)
     //
     // Errors
@@ -135,6 +140,7 @@ async function Raw(req, res, db, logCounter) {
     rtnObj.rtnCatchMsg = err.message
     rtnObj.rtnCatchFunction = moduleName
     UpdCounters(db, dbKey, 'dbcount3')
+    rtnObj.rtnSts = 9
     return res.status(503).json(rtnObj)
   }
 }

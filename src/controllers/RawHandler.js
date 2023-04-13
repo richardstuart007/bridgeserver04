@@ -21,7 +21,8 @@ async function RawHandler(db, bodyParms) {
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   try {
     //..................................................................................
@@ -38,6 +39,7 @@ async function RawHandler(db, bodyParms) {
     //
     if (!sqlAction) {
       rtnObjHdlr.rtnMessage = `SqlAction parameter not passed`
+      rtnObjHdlr.rtnSts = 8
       return rtnObjHdlr
     }
     //
@@ -54,6 +56,7 @@ async function RawHandler(db, bodyParms) {
       sqlAction !== 'UPSERT'
     ) {
       rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: SqlAction not valid`
+      rtnObjHdlr.rtnSts = 8
       return rtnObjHdlr
     }
     //
@@ -61,6 +64,7 @@ async function RawHandler(db, bodyParms) {
     //
     if (sqlAction === 'SELECTSQL' && !sqlString) {
       rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: sqlString not passed`
+      rtnObjHdlr.rtnSts = 8
       return rtnObjHdlr
     }
     //
@@ -68,6 +72,7 @@ async function RawHandler(db, bodyParms) {
     //
     if (sqlAction !== 'SELECTSQL' && !sqlTable) {
       rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: sqlTable not passed`
+      rtnObjHdlr.rtnSts = 8
       return rtnObjHdlr
     }
     //
@@ -92,6 +97,7 @@ async function RawHandler(db, bodyParms) {
     rtnObjHdlr.rtnCatch = true
     rtnObjHdlr.rtnCatchMsg = err.message
     rtnObjHdlr.rtnCatchFunction = moduleName
+    rtnObjHdlr.rtnSts = 9
     return rtnObjHdlr
   }
 }
@@ -123,7 +129,8 @@ async function sqlDatabase(
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   //
   //  Try/Catch
@@ -181,6 +188,7 @@ async function sqlDatabase(
     if (debugLog) console.log(`module(${moduleName}) sqlData `, [...sqlData])
     if (returning && (!sqlData || !sqlData[0])) {
       rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: FAILED`
+      rtnObjHdlrdb.rtnSts = 9
       return rtnObjHdlrdb
     }
     //
@@ -189,6 +197,7 @@ async function sqlDatabase(
     rtnObjHdlrdb.rtnValue = true
     rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: SUCCESS`
     rtnObjHdlrdb.rtnRows = sqlData
+    rtnObjHdlrdb.rtnSts = 1
     return rtnObjHdlrdb
     //
     // Errors
@@ -198,6 +207,7 @@ async function sqlDatabase(
     rtnObjHdlrdb.rtnCatch = true
     rtnObjHdlrdb.rtnCatchMsg = err.message
     rtnObjHdlrdb.rtnCatchFunction = moduleName
+    rtnObjHdlrdb.rtnSts = 9
     return rtnObjHdlrdb
   }
 }

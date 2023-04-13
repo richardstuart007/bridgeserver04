@@ -22,7 +22,8 @@ async function RegisterHandler(db, bodyParms) {
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   try {
     //
@@ -74,6 +75,7 @@ async function RegisterHandler(db, bodyParms) {
     rtnObjHdlr.rtnCatch = true
     rtnObjHdlr.rtnCatchMsg = err.message
     rtnObjHdlr.rtnCatchFunction = moduleName
+    rtnObjHdlr.rtnSts = 9
     return rtnObjHdlr
   }
 }
@@ -107,7 +109,8 @@ async function sqlDatabase(
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   try {
     //-------------------------------------------------------------
@@ -127,6 +130,15 @@ async function sqlDatabase(
       .returning('*')
     const upid = data_userspwd[0].upid
     if (debugLog) console.log(`module(${moduleName}) upid `, upid)
+    //
+    //  Registration failed
+    //
+    if (!upid) {
+      rtnObjHdlrdb.rtnMessage = `Register User: FAILED`
+      rtnObjHdlrdb.rtnSts = 8
+      if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
+      return rtnObjHdlrdb
+    }
     //-------------------------------------------------------------
     //  Users Insert
     //-------------------------------------------------------------
@@ -149,11 +161,12 @@ async function sqlDatabase(
       })
       .into('users')
       .returning('*')
-    //-------------------------------------------------------------
+    //
     //  Registration failed
-    //------------------------------------------------------------
+    //
     if (!data_users || !data_users[0]) {
       rtnObjHdlrdb.rtnMessage = `Register User: FAILED`
+      rtnObjHdlrdb.rtnSts = 9
       if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
       return rtnObjHdlrdb
     }
@@ -174,6 +187,7 @@ async function sqlDatabase(
     rtnObjHdlrdb.rtnValue = true
     rtnObjHdlrdb.rtnMessage = `Register User: SUCCESS`
     rtnObjHdlrdb.rtnRows = data_users
+    rtnObjHdlrdb.rtnSts = 1
     return rtnObjHdlrdb
     //-------------------------------------------------------------
     // Errors
@@ -185,9 +199,9 @@ async function sqlDatabase(
     const message = err.message
     if (message.includes('duplicate') && message.includes('userspwd_user')) {
       rtnObjHdlrdb.rtnValue = false
-      rtnObjHdlrdb.rtnMessage = ''
       rtnObjHdlrdb.rtnMessage = 'Registration User already exists'
       if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
+      rtnObjHdlrdb.rtnSts = 9
       return rtnObjHdlrdb
     }
     //
@@ -198,6 +212,7 @@ async function sqlDatabase(
     rtnObjHdlrdb.rtnCatch = true
     rtnObjHdlrdb.rtnCatchMsg = err.message
     rtnObjHdlrdb.rtnCatchFunction = moduleName
+    rtnObjHdlrdb.rtnSts = 9
     return rtnObjHdlrdb
   }
 }

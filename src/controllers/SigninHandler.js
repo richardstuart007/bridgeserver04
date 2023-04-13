@@ -22,7 +22,8 @@ async function SigninHandler(db, bodyParms) {
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   try {
     //..................................................................................
@@ -47,6 +48,7 @@ async function SigninHandler(db, bodyParms) {
     rtnObjHdlr.rtnCatch = true
     rtnObjHdlr.rtnCatchMsg = err.message
     rtnObjHdlr.rtnCatchFunction = moduleName
+    rtnObjHdlr.rtnSts = 9
     return rtnObjHdlr
   }
 }
@@ -71,7 +73,8 @@ async function sqlDatabase(db, user, password) {
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   //
   //  Try/Catch
@@ -89,6 +92,7 @@ async function sqlDatabase(db, user, password) {
     //
     if (!data_userspwd || !data_userspwd[0]) {
       rtnObjHdlrdb.rtnMessage = `Invalid User, please Register`
+      rtnObjHdlrdb.rtnSts = 8
       if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
       return rtnObjHdlrdb
     }
@@ -100,6 +104,7 @@ async function sqlDatabase(db, user, password) {
     const valid = bcrypt.compareSync(password, uphash)
     if (!valid) {
       rtnObjHdlrdb.rtnMessage = `Invalid Password`
+      rtnObjHdlrdb.rtnSts = 8
       if (debugLog) console.log(`module(${moduleName}) rtnMessage`, rtnObjHdlrdb.rtnMessage)
       return rtnObjHdlrdb
     }
@@ -118,6 +123,7 @@ async function sqlDatabase(db, user, password) {
     //
     if (!data_users || !data_users[0]) {
       rtnObjHdlrdb.rtnMessage = `Database error (Users) not found for user($user) id($upid)`
+      rtnObjHdlrdb.rtnSts = 8
       if (debugLog) console.log(`module(${moduleName}) rtnMessage`, rtnObjHdlrdb.rtnMessage)
       return rtnObjHdlrdb
     }
@@ -146,6 +152,7 @@ async function sqlDatabase(db, user, password) {
     rtnObjHdlrdb.rtnMessage = `Signin User: SUCCESS`
     rtnObjHdlrdb.rtnRows[0] = data_users[0]
     rtnObjHdlrdb.rtnRows[1] = data_usersowner
+    rtnObjHdlrdb.rtnSts = 1
     return rtnObjHdlrdb
     //-------------------------------------------------------------
     // Errors
@@ -155,6 +162,7 @@ async function sqlDatabase(db, user, password) {
     rtnObjHdlrdb.rtnCatch = true
     rtnObjHdlrdb.rtnCatchMsg = err.message
     rtnObjHdlrdb.rtnCatchFunction = moduleName
+    rtnObjHdlrdb.rtnSts = 9
     return rtnObjHdlrdb
   }
 }

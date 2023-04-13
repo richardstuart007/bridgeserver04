@@ -23,7 +23,8 @@ async function Hello(req, res, db, logCounter) {
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   try {
     //
@@ -73,6 +74,7 @@ async function Hello(req, res, db, logCounter) {
     //
     const rtnCatch = rtnObj.rtnCatch
     if (rtnCatch) {
+      rtnObj.rtnSts = 9
       return res.status(503).json(rtnObj)
     }
     //
@@ -80,13 +82,15 @@ async function Hello(req, res, db, logCounter) {
     //
     const rtnValue = rtnObj.rtnValue
     if (!rtnValue) {
-      return res.status(204).json(rtnObj)
+      rtnObj.rtnSts = 2
+      return res.status(200).json(rtnObj)
     }
     //
     //  Log return values
     //
     logMessage = logMessage + ` Hello SUCCESS`
     console.log(logMessage)
+    rtnObj.rtnSts = 1
     return res.status(200).json(rtnObj)
     //
     // Errors
@@ -97,6 +101,7 @@ async function Hello(req, res, db, logCounter) {
     rtnObj.rtnCatch = true
     rtnObj.rtnCatchMsg = err.message
     rtnObj.rtnCatchFunction = moduleName
+    rtnObj.rtnSts = 9
     return res.status(503).json(rtnObj)
   }
 }

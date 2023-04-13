@@ -30,7 +30,8 @@ async function Register(req, res, db, logCounter) {
     rtnCatchFunction: '',
     rtnCatch: false,
     rtnCatchMsg: '',
-    rtnRows: []
+    rtnRows: [],
+    rtnSts: 0
   }
   try {
     //
@@ -46,7 +47,7 @@ async function Register(req, res, db, logCounter) {
     rtnObj.rtnBodyParms = bodyParms
 
     if (debugLog)
-      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, {
+      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj Init`, {
         ...rtnObj
       })
     //
@@ -65,12 +66,17 @@ async function Register(req, res, db, logCounter) {
       logMessage = logMessage + ' ' + rtnObj.rtnMessage
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
+      rtnObj.rtnSts = 8
       return res.status(503).json(rtnObj)
     }
     //
     // Process Request Promises(ALL)
     //
     const returnData = await Promise.all([RegisterHandler.RegisterHandler(db, bodyParms)])
+    if (debugLog)
+      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) returnData `, [
+        ...returnData
+      ])
     //
     // Parse Results
     //
@@ -82,6 +88,11 @@ async function Register(req, res, db, logCounter) {
     rtnObj.rtnCatch = tempObj.rtnCatch
     rtnObj.rtnCatchMsg = tempObj.rtnCatchMsg
     rtnObj.rtnRows = tempObj.rtnRows
+    rtnObj.rtnSts = tempObj.rtnSts
+    if (debugLog)
+      console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj 1`, {
+        ...rtnObj
+      })
     //
     //  Catch
     //
@@ -100,7 +111,11 @@ async function Register(req, res, db, logCounter) {
       logMessage = logMessage + ' ' + rtnObj.rtnMessage
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
-      return res.status(204).json(rtnObj)
+      if (debugLog)
+        console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj`, {
+          ...rtnObj
+        })
+      return res.status(200).json(rtnObj)
     }
     //
     //  Log return values
@@ -120,6 +135,7 @@ async function Register(req, res, db, logCounter) {
     rtnObj.rtnCatchMsg = err.message
     rtnObj.rtnCatchFunction = moduleName
     UpdCounters(db, dbKey, 'dbcount3')
+    rtnObj.rtnSts = 9
     return res.status(503).json(rtnObj)
   }
 }
