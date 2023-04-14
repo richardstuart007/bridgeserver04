@@ -426,7 +426,7 @@ function logRawTables(req) {
   //
   //  Destructure Parameters
   //
-  const { sqlClient, sqlAction, sqlTable, Sess, AxId, AxTry } = req.body
+  const { AxClient, AxAction, AxTable, AxSess, AxId, AxTry } = req.body
   //
   //  Timestamp and Counter
   //
@@ -435,8 +435,8 @@ function logRawTables(req) {
   //
   //  Format Message & Log
   //
-  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient}) `
-  if (sqlTable) logMessage = logMessage + ` Table(${sqlTable}) Sql(${sqlAction})`
+  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} AxSess(${AxSess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) AxClient(${AxClient}) `
+  if (AxTable) logMessage = logMessage + ` Table(${AxTable}) Sql(${AxAction})`
   console.log(logMessage)
 }
 //.............................................................................
@@ -446,7 +446,7 @@ function logRawSignIn(req, fetchAction) {
   //
   //  Destructure Parameters
   //
-  const { user, name, sqlClient, Sess, AxId, AxTry } = req.body
+  const { user, name, AxClient, AxSess, AxId, AxTry } = req.body
   const { id } = req.params
   //
   //  Counter
@@ -456,7 +456,7 @@ function logRawSignIn(req, fetchAction) {
   //
   // Format message & Log
   //
-  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient}) fetchAction(${fetchAction}) User(${user})`
+  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} AxSess(${AxSess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) AxClient(${AxClient}) fetchAction(${fetchAction}) User(${user})`
   if (name) logMessage.concat(` Name(${name})`)
   if (id) logMessage.concat(` ID(${id})`)
   console.log(logMessage)
@@ -468,7 +468,7 @@ function logHello(req) {
   //
   //  Destructure Parameters
   //
-  const { sqlClient, Sess, AxId, AxTry } = req.body
+  const { AxClient, AxSess, AxId, AxTry } = req.body
   //
   //  Counter
   //
@@ -477,6 +477,6 @@ function logHello(req) {
   //
   // Format message & Log
   //
-  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient}) Hello`
+  let logMessage = `Server.. ${logCounter} Time:${TimeStamp} AxSess(${AxSess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) AxClient(${AxClient}) Hello`
   console.log(logMessage)
 }

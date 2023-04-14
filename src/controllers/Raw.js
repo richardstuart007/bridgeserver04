@@ -42,8 +42,8 @@ async function Raw(req, res, db, logCounter) {
     //  Parameters
     //
     const bodyParms = req.body
-    const { sqlClient, Sess, AxId, AxTry } = bodyParms
-    logMessage = `Handler. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient})`
+    const { AxClient, AxSess, AxId, AxTry } = bodyParms
+    logMessage = `Handler. ${logCounter} Time:${TimeStamp} AxSess(${AxSess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) AxClient(${AxClient})`
     rtnObj.rtnBodyParms = bodyParms
     if (debugLog)
       console.log(`Handler. ${logCounter} Time:${TimeStamp} Module(${moduleName}) rtnObj `, {
@@ -59,16 +59,16 @@ async function Raw(req, res, db, logCounter) {
     //
     //  Action type not sent
     //
-    const { sqlAction, sqlTable } = bodyParms
+    const { AxAction, AxTable } = bodyParms
     //
     //  Table/Action to message
     //
-    logMessage = logMessage + ` Table(${sqlTable}) ${sqlAction}`
+    logMessage = logMessage + ` Table(${AxTable}) ${AxAction}`
     //
     //  Check Action passed
     //
-    if (!sqlAction) {
-      rtnObj.rtnMessage = `sqlAction not sent as Body Parameters`
+    if (!AxAction) {
+      rtnObj.rtnMessage = `AxAction not sent as Body Parameters`
       logMessage = logMessage + ' ' + rtnObj.rtnMessage
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')
@@ -76,19 +76,19 @@ async function Raw(req, res, db, logCounter) {
       return res.status(503).json(rtnObj)
     }
     //
-    //  Validate sqlAction type
+    //  Validate AxAction type
     //
     if (
-      sqlAction !== 'DELETE' &&
-      sqlAction !== 'EXIST' &&
-      sqlAction !== 'SELECTSQL' &&
-      sqlAction !== 'SELECT' &&
-      sqlAction !== 'INSERT' &&
-      sqlAction !== 'UPDATE' &&
-      sqlAction !== 'UPDATERAW' &&
-      sqlAction !== 'UPSERT'
+      AxAction !== 'DELETE' &&
+      AxAction !== 'EXIST' &&
+      AxAction !== 'SELECTSQL' &&
+      AxAction !== 'SELECT' &&
+      AxAction !== 'INSERT' &&
+      AxAction !== 'UPDATE' &&
+      AxAction !== 'UPDATERAW' &&
+      AxAction !== 'UPSERT'
     ) {
-      rtnObj.rtnMessage = `sqlAction ${sqlAction}: sqlAction not valid`
+      rtnObj.rtnMessage = `AxAction ${AxAction}: AxAction not valid`
       logMessage = logMessage + ' ' + rtnObj.rtnMessage
       console.log(logMessage)
       UpdCounters(db, dbKey, 'dbcount3')

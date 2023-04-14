@@ -31,47 +31,46 @@ async function RawHandler(db, bodyParms) {
     //
     //  Destructure Parameters
     //
-    const { sqlAction, sqlString, sqlTable, sqlWhere, sqlOrderByRaw, sqlRow, sqlKeyName } =
-      bodyParms
+    const { AxAction, AxString, AxTable, AxWhere, AxOrderByRaw, AxRow, AxKeyName } = bodyParms
     if (debugLog) console.log(`module(${moduleName}) bodyParms `, { ...bodyParms })
     //
     // Check values sent
     //
-    if (!sqlAction) {
+    if (!AxAction) {
       rtnObjHdlr.rtnMessage = `SqlAction parameter not passed`
       rtnObjHdlr.rtnSts = 8
       return rtnObjHdlr
     }
     //
-    //  Validate sqlAction type
+    //  Validate AxAction type
     //
     if (
-      sqlAction !== 'DELETE' &&
-      sqlAction !== 'EXIST' &&
-      sqlAction !== 'SELECTSQL' &&
-      sqlAction !== 'SELECT' &&
-      sqlAction !== 'INSERT' &&
-      sqlAction !== 'UPDATE' &&
-      sqlAction !== 'UPDATERAW' &&
-      sqlAction !== 'UPSERT'
+      AxAction !== 'DELETE' &&
+      AxAction !== 'EXIST' &&
+      AxAction !== 'SELECTSQL' &&
+      AxAction !== 'SELECT' &&
+      AxAction !== 'INSERT' &&
+      AxAction !== 'UPDATE' &&
+      AxAction !== 'UPDATERAW' &&
+      AxAction !== 'UPSERT'
     ) {
-      rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: SqlAction not valid`
+      rtnObjHdlr.rtnMessage = `SqlAction ${AxAction}: SqlAction not valid`
       rtnObjHdlr.rtnSts = 8
       return rtnObjHdlr
     }
     //
-    //  SELECTSQL needs sqlString
+    //  SELECTSQL needs AxString
     //
-    if (sqlAction === 'SELECTSQL' && !sqlString) {
-      rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: sqlString not passed`
+    if (AxAction === 'SELECTSQL' && !AxString) {
+      rtnObjHdlr.rtnMessage = `SqlAction ${AxAction}: AxString not passed`
       rtnObjHdlr.rtnSts = 8
       return rtnObjHdlr
     }
     //
     //  not SELECTSQL needs table
     //
-    if (sqlAction !== 'SELECTSQL' && !sqlTable) {
-      rtnObjHdlr.rtnMessage = `SqlAction ${sqlAction}: sqlTable not passed`
+    if (AxAction !== 'SELECTSQL' && !AxTable) {
+      rtnObjHdlr.rtnMessage = `SqlAction ${AxAction}: AxTable not passed`
       rtnObjHdlr.rtnSts = 8
       return rtnObjHdlr
     }
@@ -80,13 +79,13 @@ async function RawHandler(db, bodyParms) {
     //
     const rtnObjHdlrdb = await sqlDatabase(
       db,
-      sqlAction,
-      sqlString,
-      sqlTable,
-      sqlWhere,
-      sqlOrderByRaw,
-      sqlRow,
-      sqlKeyName
+      AxAction,
+      AxString,
+      AxTable,
+      AxWhere,
+      AxOrderByRaw,
+      AxRow,
+      AxKeyName
     )
     return rtnObjHdlrdb
     //
@@ -106,13 +105,13 @@ async function RawHandler(db, bodyParms) {
 //!==================================================================================
 async function sqlDatabase(
   db,
-  sqlAction,
-  sqlString,
-  sqlTable,
-  sqlWhere,
-  sqlOrderByRaw,
-  sqlRow,
-  sqlKeyName
+  AxAction,
+  AxString,
+  AxTable,
+  AxWhere,
+  AxOrderByRaw,
+  AxRow,
+  AxKeyName
 ) {
   //
   // Define Return Variable
@@ -136,49 +135,49 @@ async function sqlDatabase(
   //  Try/Catch
   //
   try {
-    switch (sqlAction) {
+    switch (AxAction) {
       case 'SELECTSQL':
-        sqlData = await db.select(db.raw(sqlString))
+        sqlData = await db.select(db.raw(AxString))
         break
       case 'SELECT':
-        if (sqlOrderByRaw) {
-          sqlData = await db.select('*').from(sqlTable).whereRaw(sqlWhere).orderByRaw(sqlOrderByRaw)
+        if (AxOrderByRaw) {
+          sqlData = await db.select('*').from(AxTable).whereRaw(AxWhere).orderByRaw(AxOrderByRaw)
         } else {
-          sqlData = await db.select('*').from(sqlTable).whereRaw(sqlWhere)
+          sqlData = await db.select('*').from(AxTable).whereRaw(AxWhere)
         }
         break
       case 'UPDATE':
         returning = true
-        sqlData = await db.update(sqlRow).from(sqlTable).whereRaw(sqlWhere).returning(['*'])
+        sqlData = await db.update(AxRow).from(AxTable).whereRaw(AxWhere).returning(['*'])
         break
       case 'UPDATERAW':
         returning = true
-        sqlData = await db.raw(sqlString)
+        sqlData = await db.raw(AxString)
         break
       case 'DELETE':
         returning = true
-        sqlData = await db.del().from(sqlTable).whereRaw(sqlWhere).returning(['*'])
+        sqlData = await db.del().from(AxTable).whereRaw(AxWhere).returning(['*'])
         break
       case 'INSERT':
         returning = true
-        if (sqlKeyName) {
+        if (AxKeyName) {
           sqlData = await db
-            .insert(sqlRow)
-            .into(sqlTable)
+            .insert(AxRow)
+            .into(AxTable)
             .returning(['*'])
-            .onConflict(sqlKeyName)
+            .onConflict(AxKeyName)
             .ignore()
         } else {
-          sqlData = await db.insert(sqlRow).into(sqlTable).returning(['*'])
+          sqlData = await db.insert(AxRow).into(AxTable).returning(['*'])
         }
         break
       case 'UPSERT':
         returning = true
         sqlData = await db
-          .insert(sqlRow)
-          .into(sqlTable)
+          .insert(AxRow)
+          .into(AxTable)
           .returning(['*'])
-          .onConflict(sqlKeyName)
+          .onConflict(AxKeyName)
           .merge()
         break
     }
@@ -187,7 +186,7 @@ async function sqlDatabase(
     //
     if (debugLog) console.log(`module(${moduleName}) sqlData `, [...sqlData])
     if (returning && (!sqlData || !sqlData[0])) {
-      rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: FAILED`
+      rtnObjHdlrdb.rtnMessage = `SqlAction ${AxAction}: FAILED`
       rtnObjHdlrdb.rtnSts = 9
       return rtnObjHdlrdb
     }
@@ -195,7 +194,7 @@ async function sqlDatabase(
     // Update Return Values
     //
     rtnObjHdlrdb.rtnValue = true
-    rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: SUCCESS`
+    rtnObjHdlrdb.rtnMessage = `SqlAction ${AxAction}: SUCCESS`
     rtnObjHdlrdb.rtnRows = sqlData
     rtnObjHdlrdb.rtnSts = 1
     return rtnObjHdlrdb

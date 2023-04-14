@@ -42,8 +42,8 @@ async function Register(req, res, db, logCounter) {
     //  Parameters
     //
     const bodyParms = req.body
-    const { sqlClient, Sess, AxId, AxTry } = bodyParms
-    logMessage = `Handler. ${logCounter} Time:${TimeStamp} Sess(${Sess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) sqlClient(${sqlClient})`
+    const { AxClient, AxSess, AxId, AxTry } = bodyParms
+    logMessage = `Handler. ${logCounter} Time:${TimeStamp} AxSess(${AxSess}) AxId(${AxId}) AxTry(${AxTry}) Module(${moduleName}) AxClient(${AxClient})`
     rtnObj.rtnBodyParms = bodyParms
 
     if (debugLog)

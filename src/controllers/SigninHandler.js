@@ -62,7 +62,7 @@ async function sqlDatabase(db, user, password) {
   let data_userspwd = false
   let data_users = false
   let data_usersowner = false
-  let sqlWhere
+  let AxWhere
   //
   //  Object returned by this module
   //
@@ -84,9 +84,9 @@ async function sqlDatabase(db, user, password) {
     //-------------------------------------------------------------
     //  Userspwd GET
     //-------------------------------------------------------------
-    sqlWhere = `upuser = '${user}'`
-    if (debugLog) console.log(`module(${moduleName}) userspwd - sqlWhere `, sqlWhere)
-    data_userspwd = await db.select('*').from('userspwd').whereRaw(sqlWhere)
+    AxWhere = `upuser = '${user}'`
+    if (debugLog) console.log(`module(${moduleName}) userspwd - AxWhere `, AxWhere)
+    data_userspwd = await db.select('*').from('userspwd').whereRaw(AxWhere)
     //
     //  Userspwd not found
     //
@@ -115,9 +115,9 @@ async function sqlDatabase(db, user, password) {
     //-------------------------------------------------------------
     //  GET Users
     //-------------------------------------------------------------
-    sqlWhere = `u_id = '${upid}'`
-    if (debugLog) console.log(`module(${moduleName}) users - sqlWhere `, sqlWhere)
-    data_users = await db.select('*').from('users').whereRaw(sqlWhere)
+    AxWhere = `u_id = '${upid}'`
+    if (debugLog) console.log(`module(${moduleName}) users - AxWhere `, AxWhere)
+    data_users = await db.select('*').from('users').whereRaw(AxWhere)
     //
     //  Not found
     //
@@ -130,9 +130,9 @@ async function sqlDatabase(db, user, password) {
     //-------------------------------------------------------------
     //  GET Usersowner
     //-------------------------------------------------------------
-    sqlWhere = `uoid = '${upid}'`
-    if (debugLog) console.log(`module(${moduleName}) usersowner - sqlWhere `, sqlWhere)
-    data_usersowner = await db.select('*').from('usersowner').whereRaw(sqlWhere)
+    AxWhere = `uoid = '${upid}'`
+    if (debugLog) console.log(`module(${moduleName}) usersowner - AxWhere `, AxWhere)
+    data_usersowner = await db.select('*').from('usersowner').whereRaw(AxWhere)
     //
     //  Not found
     //

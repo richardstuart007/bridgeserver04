@@ -53,10 +53,10 @@ async function sqlDatabase(db, dbKey, dbCounter) {
   // Define Return Variable
   //
   let rtnData
-  const sqlTable = 'dbstats'
-  const sqlAction = 'Increment'
-  const sqlString = `UPDATE ${sqlTable} SET ${dbCounter} = ${dbCounter} + 1 WHERE dbKey = '${dbKey}' RETURNING *`
-  if (debugLog) console.log(`module(${moduleName}) sqlString `, sqlString)
+  const AxTable = 'dbstats'
+  const AxAction = 'Increment'
+  const AxString = `UPDATE ${AxTable} SET ${dbCounter} = ${dbCounter} + 1 WHERE dbKey = '${dbKey}' RETURNING *`
+  if (debugLog) console.log(`module(${moduleName}) AxString `, AxString)
   //
   //  Object returned by this module
   //
@@ -73,12 +73,12 @@ async function sqlDatabase(db, dbKey, dbCounter) {
   //  Try/Catch
   //
   try {
-    rtnData = await db.raw(sqlString)
+    rtnData = await db.raw(AxString)
     //
     //  Expect returning value
     //
     if (!rtnData || !rtnData.rows[0]) {
-      rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: FAILED`
+      rtnObjHdlrdb.rtnMessage = `SqlAction ${AxAction}: FAILED`
       return rtnObjHdlrdb
     }
     //
@@ -96,7 +96,7 @@ async function sqlDatabase(db, dbKey, dbCounter) {
       : (dbcount = record.dbcount3)
 
     rtnObjHdlrdb.rtnValue = true
-    rtnObjHdlrdb.rtnMessage = `SqlAction ${sqlAction}: SUCCESS - Updated ${dbCounter} ${dbcount}`
+    rtnObjHdlrdb.rtnMessage = `SqlAction ${AxAction}: SUCCESS - Updated ${dbCounter} ${dbcount}`
     rtnObjHdlrdb.rtnRows = rows
     if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
     return rtnObjHdlrdb
