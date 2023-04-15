@@ -128,12 +128,12 @@ async function sqlDatabase(
       })
       .into('userspwd')
       .returning('*')
-    const upid = data_userspwd[0].upid
-    if (debugLog) console.log(`module(${moduleName}) upid `, upid)
+    const upuid = data_userspwd[0].upuid
+    if (debugLog) console.log(`module(${moduleName}) upuid `, upuid)
     //
     //  Registration failed
     //
-    if (!upid) {
+    if (!upuid) {
       rtnObjHdlrdb.rtnMessage = `Register User: FAILED`
       rtnObjHdlrdb.rtnSts = 8
       if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
@@ -144,7 +144,7 @@ async function sqlDatabase(
     //-------------------------------------------------------------
     const data_users = await db
       .insert({
-        u_id: upid,
+        u_uid: upuid,
         u_name: name,
         u_user: user,
         u_email: email,
@@ -175,7 +175,7 @@ async function sqlDatabase(
     //-------------------------------------------------------------
     await db
       .insert({
-        uoid: upid,
+        uouid: upuid,
         uouser: user,
         uoowner: dftowner
       })

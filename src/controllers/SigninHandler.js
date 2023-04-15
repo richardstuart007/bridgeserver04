@@ -111,18 +111,18 @@ async function sqlDatabase(db, user, password) {
     //
     //  User ID
     //
-    const upid = userspwd.upid
+    const upuid = userspwd.upuid
     //-------------------------------------------------------------
     //  GET Users
     //-------------------------------------------------------------
-    AxWhere = `u_id = '${upid}'`
+    AxWhere = `u_uid = '${upuid}'`
     if (debugLog) console.log(`module(${moduleName}) users - AxWhere `, AxWhere)
     data_users = await db.select('*').from('users').whereRaw(AxWhere)
     //
     //  Not found
     //
     if (!data_users || !data_users[0]) {
-      rtnObjHdlrdb.rtnMessage = `Database error (Users) not found for user($user) id($upid)`
+      rtnObjHdlrdb.rtnMessage = `Database error (Users) not found for user($user) id($upuid)`
       rtnObjHdlrdb.rtnSts = 8
       if (debugLog) console.log(`module(${moduleName}) rtnMessage`, rtnObjHdlrdb.rtnMessage)
       return rtnObjHdlrdb
@@ -130,14 +130,14 @@ async function sqlDatabase(db, user, password) {
     //-------------------------------------------------------------
     //  GET Usersowner
     //-------------------------------------------------------------
-    AxWhere = `uoid = '${upid}'`
+    AxWhere = `uouid = '${upuid}'`
     if (debugLog) console.log(`module(${moduleName}) usersowner - AxWhere `, AxWhere)
     data_usersowner = await db.select('*').from('usersowner').whereRaw(AxWhere)
     //
     //  Not found
     //
     if (!data_usersowner) {
-      rtnObjHdlrdb.rtnMessage = `Database error (Usersowner) not found for user($user) id($upid)`
+      rtnObjHdlrdb.rtnMessage = `Database error (Usersowner) not found for user($user) id($upuid)`
       if (debugLog) console.log(`module(${moduleName}) rtnMessage `, rtnObjHdlrdb.rtnMessage)
     }
     //-------------------------------------------------------------
