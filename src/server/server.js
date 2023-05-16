@@ -23,6 +23,10 @@ const debugLog = debugSettings.debugSettings()
 //.  Initialisation
 //.............................................................................
 //
+//  Environment variables package
+//
+require('dotenv').config()
+//
 //  Arguments
 //
 const node_module = process.argv[0]
@@ -31,7 +35,6 @@ let server_database = process.argv[2]
 const env_database = process.env.DATABASE
 if (debugLog) console.log('node_module ', node_module)
 if (debugLog) console.log('script_path ', script_path)
-if (debugLog) console.log('server_database ', server_database)
 if (debugLog) console.log('env_database ', env_database)
 //
 //  Override database if not sent
@@ -109,7 +112,10 @@ console.log(
 //.............................................................................
 // Routes
 //.............................................................................
-const { URL_HELLO, URL_SIGNIN, URL_TABLES, URL_REGISTER } = require('../constants.js')
+const URL_HELLO = process.env.URL_HELLO
+const URL_SIGNIN = process.env.URL_SIGNIN
+const URL_TABLES = process.env.URL_TABLES
+const URL_REGISTER = process.env.URL_REGISTER
 // --------------------
 //.  Routes - Hello
 // --------------------
@@ -150,61 +156,65 @@ getServerPort()
 const TimeStamp = format(new Date(), 'HHmmss')
 let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Module(${moduleName}) running on PORT(${serverPort})`
 const server = app.listen(serverPort, () => console.log(logMessage))
-const { KEEP_ALIVE_TIMEOUT, HEADERS_TIMEOUT } = require('../constants.js')
+const KEEP_ALIVE_TIMEOUT = process.env.KEEP_ALIVE_TIMEOUT | 0
+const HEADERS_TIMEOUT = process.env.HEADERS_TIMEOUT | 0
+if (debugLog) console.log('KEEP_ALIVE_TIMEOUT ', KEEP_ALIVE_TIMEOUT)
 server.keepAliveTimeout = KEEP_ALIVE_TIMEOUT
 server.headersTimeout = HEADERS_TIMEOUT
 //.............................................................................
 //.  get the WhiteList
 //.............................................................................
 function getWhiteList() {
-  const {
-    CORS_WHITELIST_SRVREM_DB1,
-    CORS_WHITELIST_SRVREM_DB2,
-    CORS_WHITELIST_SRVREM_DB3,
-    CORS_WHITELIST_SRVREM_DB4,
-    CORS_WHITELIST_SRVLOC_DB1,
-    CORS_WHITELIST_SRVLOC_DB2,
-    CORS_WHITELIST_SRVLOC_DB3,
-    CORS_WHITELIST_SRVLOC_DB4,
-    CORS_WHITELIST_SRVLOC_DB6,
-    CORS_WHITELIST_SRVLOC_DB7
-  } = require('../constants.js')
+  const CORS_WHITELIST_SRVREM_DB1 = process.env.CORS_WHITELIST_SRVREM_DB1
+  const CORS_WHITELIST_SRVREM_DB2 = process.env.CORS_WHITELIST_SRVREM_DB2
+  const CORS_WHITELIST_SRVREM_DB3 = process.env.CORS_WHITELIST_SRVREM_DB3
+  const CORS_WHITELIST_SRVREM_DB4 = process.env.CORS_WHITELIST_SRVREM_DB4
+  const CORS_WHITELIST_SRVLOC_DB1 = process.env.CORS_WHITELIST_SRVLOC_DB1
+  const CORS_WHITELIST_SRVLOC_DB2 = process.env.CORS_WHITELIST_SRVLOC_DB2
+  const CORS_WHITELIST_SRVLOC_DB3 = process.env.CORS_WHITELIST_SRVLOC_DB3
+  const CORS_WHITELIST_SRVLOC_DB4 = process.env.CORS_WHITELIST_SRVLOC_DB4
+  const CORS_WHITELIST_SRVLOC_DB6 = process.env.CORS_WHITELIST_SRVLOC_DB6
+  const CORS_WHITELIST_SRVLOC_DB7 = process.env.CORS_WHITELIST_SRVLOC_DB7
   //
   //  Determimne the correct whitelist
   //
+  let cors_Whitelist_string
   switch (server_database) {
     case '01':
-      cors_Whitelist = CORS_WHITELIST_SRVREM_DB1
+      cors_Whitelist_string = CORS_WHITELIST_SRVREM_DB1
       break
     case '02':
-      cors_Whitelist = CORS_WHITELIST_SRVREM_DB2
+      cors_Whitelist_string = CORS_WHITELIST_SRVREM_DB2
       break
     case '03':
-      cors_Whitelist = CORS_WHITELIST_SRVREM_DB3
+      cors_Whitelist_string = CORS_WHITELIST_SRVREM_DB3
       break
     case '04':
-      cors_Whitelist = CORS_WHITELIST_SRVREM_DB4
+      cors_Whitelist_string = CORS_WHITELIST_SRVREM_DB4
       break
     case '11':
-      cors_Whitelist = CORS_WHITELIST_SRVLOC_DB1
+      cors_Whitelist_string = CORS_WHITELIST_SRVLOC_DB1
       break
     case '12':
-      cors_Whitelist = CORS_WHITELIST_SRVLOC_DB2
+      cors_Whitelist_string = CORS_WHITELIST_SRVLOC_DB2
       break
     case '13':
-      cors_Whitelist = CORS_WHITELIST_SRVLOC_DB3
+      cors_Whitelist_string = CORS_WHITELIST_SRVLOC_DB3
       break
     case '14':
-      cors_Whitelist = CORS_WHITELIST_SRVLOC_DB4
+      cors_Whitelist_string = CORS_WHITELIST_SRVLOC_DB4
       break
     case '16':
-      cors_Whitelist = CORS_WHITELIST_SRVLOC_DB6
+      cors_Whitelist_string = CORS_WHITELIST_SRVLOC_DB6
       break
     case '17':
-      cors_Whitelist = CORS_WHITELIST_SRVLOC_DB7
+      cors_Whitelist_string = CORS_WHITELIST_SRVLOC_DB7
       break
     default:
   }
+  if (debugLog) console.log('cors_Whitelist_string ', cors_Whitelist_string)
+  cors_Whitelist = cors_Whitelist_string.split(', ')
+  if (debugLog) console.log('cors_Whitelist ', cors_Whitelist)
 }
 //.............................................................................
 //.  get the KNEX parameters
@@ -213,69 +223,57 @@ function getknexparams() {
   //
   // Database 1
   //
-  const {
-    KNEX_PORT1,
-    KNEX_CLIENT1,
-    KNEX_HOST1,
-    KNEX_USER1,
-    KNEX_PWD1,
-    KNEX_DATABASE1
-  } = require('../constants.js')
+  const KNEX_PORT1 = process.env.KNEX_PORT1
+  const KNEX_CLIENT1 = process.env.KNEX_CLIENT1
+  const KNEX_HOST1 = process.env.KNEX_HOST1
+  const KNEX_USER1 = process.env.KNEX_USER1
+  const KNEX_PWD1 = process.env.KNEX_PWD1
+  const KNEX_DATABASE1 = process.env.KNEX_DATABASE1
   //
   // Database 2
   //
-  const {
-    KNEX_PORT2,
-    KNEX_CLIENT2,
-    KNEX_HOST2,
-    KNEX_USER2,
-    KNEX_PWD2,
-    KNEX_DATABASE2
-  } = require('../constants.js')
+  const KNEX_PORT2 = process.env.KNEX_PORT2
+  const KNEX_CLIENT2 = process.env.KNEX_CLIENT2
+  const KNEX_HOST2 = process.env.KNEX_HOST2
+  const KNEX_USER2 = process.env.KNEX_USER2
+  const KNEX_PWD2 = process.env.KNEX_PWD2
+  const KNEX_DATABASE2 = process.env.KNEX_DATABASE2
   //
   // Database 3
   //
-  const {
-    KNEX_PORT3,
-    KNEX_CLIENT3,
-    KNEX_HOST3,
-    KNEX_USER3,
-    KNEX_PWD3,
-    KNEX_DATABASE3
-  } = require('../constants.js')
+  const KNEX_PORT3 = process.env.KNEX_PORT3
+  const KNEX_CLIENT3 = process.env.KNEX_CLIENT3
+  const KNEX_HOST3 = process.env.KNEX_HOST3
+  const KNEX_USER3 = process.env.KNEX_USER3
+  const KNEX_PWD3 = process.env.KNEX_PWD3
+  const KNEX_DATABASE3 = process.env.KNEX_DATABASE3
   //
   // Database 4
   //
-  const {
-    KNEX_PORT4,
-    KNEX_CLIENT4,
-    KNEX_HOST4,
-    KNEX_USER4,
-    KNEX_PWD4,
-    KNEX_DATABASE4
-  } = require('../constants.js')
+  const KNEX_PORT4 = process.env.KNEX_PORT4
+  const KNEX_CLIENT4 = process.env.KNEX_CLIENT4
+  const KNEX_HOST4 = process.env.KNEX_HOST4
+  const KNEX_USER4 = process.env.KNEX_USER4
+  const KNEX_PWD4 = process.env.KNEX_PWD4
+  const KNEX_DATABASE4 = process.env.KNEX_DATABASE4
   //
   // Database 6
   //
-  const {
-    KNEX_PORT6,
-    KNEX_CLIENT6,
-    KNEX_HOST6,
-    KNEX_USER6,
-    KNEX_PWD6,
-    KNEX_DATABASE6
-  } = require('../constants.js')
+  const KNEX_PORT6 = process.env.KNEX_PORT6
+  const KNEX_CLIENT6 = process.env.KNEX_CLIENT6
+  const KNEX_HOST6 = process.env.KNEX_HOST6
+  const KNEX_USER6 = process.env.KNEX_USER6
+  const KNEX_PWD6 = process.env.KNEX_PWD6
+  const KNEX_DATABASE6 = process.env.KNEX_DATABASE6
   //
   // Database 7
   //
-  const {
-    KNEX_PORT7,
-    KNEX_CLIENT7,
-    KNEX_HOST7,
-    KNEX_USER7,
-    KNEX_PWD7,
-    KNEX_DATABASE7
-  } = require('../constants.js')
+  const KNEX_PORT7 = process.env.KNEX_PORT7
+  const KNEX_CLIENT7 = process.env.KNEX_CLIENT7
+  const KNEX_HOST7 = process.env.KNEX_HOST7
+  const KNEX_USER7 = process.env.KNEX_USER7
+  const KNEX_PWD7 = process.env.KNEX_PWD7
+  const KNEX_DATABASE7 = process.env.KNEX_DATABASE7
   //
   //  Set KNEX
   //
@@ -370,18 +368,16 @@ function getServerPort() {
   //
   // Server Ports
   //
-  const {
-    SERVERPORT_SRVREM_DB1,
-    SERVERPORT_SRVLOC_DB1,
-    SERVERPORT_SRVREM_DB2,
-    SERVERPORT_SRVLOC_DB2,
-    SERVERPORT_SRVREM_DB3,
-    SERVERPORT_SRVLOC_DB3,
-    SERVERPORT_SRVREM_DB4,
-    SERVERPORT_SRVLOC_DB4,
-    SERVERPORT_SRVLOC_DB6,
-    SERVERPORT_SRVLOC_DB7
-  } = require('../constants.js')
+  const SERVERPORT_SRVREM_DB1 = process.env.SERVERPORT_SRVREM_DB1
+  const SERVERPORT_SRVLOC_DB1 = process.env.SERVERPORT_SRVLOC_DB1
+  const SERVERPORT_SRVREM_DB2 = process.env.SERVERPORT_SRVREM_DB2
+  const SERVERPORT_SRVLOC_DB2 = process.env.SERVERPORT_SRVLOC_DB2
+  const SERVERPORT_SRVREM_DB3 = process.env.SERVERPORT_SRVREM_DB3
+  const SERVERPORT_SRVLOC_DB3 = process.env.SERVERPORT_SRVLOC_DB3
+  const SERVERPORT_SRVREM_DB4 = process.env.SERVERPORT_SRVREM_DB4
+  const SERVERPORT_SRVLOC_DB4 = process.env.SERVERPORT_SRVLOC_DB4
+  const SERVERPORT_SRVLOC_DB6 = process.env.SERVERPORT_SRVLOC_DB6
+  const SERVERPORT_SRVLOC_DB7 = process.env.SERVERPORT_SRVLOC_DB7
   //
   //  server_database connection
   //
