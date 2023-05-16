@@ -6,8 +6,12 @@ require('dotenv').config()
 //
 //  Debug Settings
 //
-const DEBUG_LOG_OVERRIDE = process.env.DEBUG_LOG_OVERRIDE
-const DEBUG_LOG = process.env.DEBUG_LOG
+let DEBUG_LOG_OVERRIDE = false
+if (process.env.REACT_APP_DEBUG_LOG_OVERRIDE === 'true') DEBUG_LOG_OVERRIDE = true
+
+let DEBUG_LOG = false
+if (process.env.REACT_APP_DEBUG_LOG === 'true') DEBUG_LOG = true
+
 function debugSettings(debug = false) {
   //
   //  Log Override, then return Debug_Log value ?
