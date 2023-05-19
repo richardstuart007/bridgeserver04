@@ -35,7 +35,6 @@ let server_database = process.argv[2]
 const env_database = process.env.DATABASE
 if (debugLog) console.log('node_module ', node_module)
 if (debugLog) console.log('script_path ', script_path)
-if (debugLog) console.log('env_database ', env_database)
 //
 //  Override database if not sent
 //
