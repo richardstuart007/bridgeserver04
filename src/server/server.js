@@ -13,6 +13,7 @@ const myCors = require('cors')
 const Hello = require('../controllers/Hello')
 const Raw = require('../controllers/Raw')
 const Register = require('../controllers/Register')
+const RegisterPwd = require('../controllers/RegisterPwd')
 const Signin = require('../controllers/Signin')
 //
 //  Debug Settings
@@ -115,6 +116,7 @@ const URL_HELLO = process.env.URL_HELLO
 const URL_SIGNIN = process.env.URL_SIGNIN
 const URL_TABLES = process.env.URL_TABLES
 const URL_REGISTER = process.env.URL_REGISTER
+const URL_REGISTERPWD = process.env.URL_REGISTERPWD
 // --------------------
 //.  Routes - Hello
 // --------------------
@@ -147,6 +149,13 @@ myRouter.post(URL_REGISTER, (req, res) => {
   logRawSignIn(req, 'POST Register')
   Register.Register(req, res, db, logCounter)
 })
+// --------------------
+//.  Routes - RegisterPwd
+// --------------------
+myRouter.post(URL_REGISTERPWD, (req, res) => {
+  logRawSignIn(req, 'POST RegisterPwd')
+  RegisterPwd.RegisterPwd(req, res, db, logCounter)
+})
 //.............................................................................
 //.  Start Server
 //.............................................................................
@@ -155,8 +164,8 @@ getServerPort()
 const TimeStamp = format(new Date(), 'HHmmss')
 let logMessage = `Server.. ${logCounter} Time:${TimeStamp} Module(${moduleName}) running on PORT(${serverPort})`
 const server = app.listen(serverPort, () => console.log(logMessage))
-const KEEP_ALIVE_TIMEOUT = process.env.KEEP_ALIVE_TIMEOUT | 0
-const HEADERS_TIMEOUT = process.env.HEADERS_TIMEOUT | 0
+const KEEP_ALIVE_TIMEOUT = process.env.KEEP_ALIVE_TIMEOUT | 120000
+const HEADERS_TIMEOUT = process.env.HEADERS_TIMEOUT | 120000
 if (debugLog) console.log('KEEP_ALIVE_TIMEOUT ', KEEP_ALIVE_TIMEOUT)
 server.keepAliveTimeout = KEEP_ALIVE_TIMEOUT
 server.headersTimeout = HEADERS_TIMEOUT

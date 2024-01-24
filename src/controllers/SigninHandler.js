@@ -122,7 +122,7 @@ async function sqlDatabase(db, user, password) {
     //  Not found
     //
     if (!data_users || !data_users[0]) {
-      rtnObjHdlrdb.rtnMessage = `Database error (Users) not found for user($user) id($upuid)`
+      rtnObjHdlrdb.rtnMessage = `Database error (Users) not found for user(${user}) id(${upuid})`
       rtnObjHdlrdb.rtnSts = 8
       if (debugLog) console.log(`module(${moduleName}) rtnMessage`, rtnObjHdlrdb.rtnMessage)
       return rtnObjHdlrdb
